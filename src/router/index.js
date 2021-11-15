@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
+import tags from "@/views/tags";
 
-const routes = [
+export const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home
+  },
+   {
+    path: '/tags',
+    name: '标签管理',
+    component: tags
   },
   {
     path: '/about',
