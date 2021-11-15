@@ -28,9 +28,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      user: state => state.user.user,
-    })
   },
   methods: {
     select(index,indexPath){
@@ -40,8 +37,6 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("user/getStatus")
-
   },
 }
 
