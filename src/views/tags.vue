@@ -28,12 +28,12 @@
             <el-form inline>
               <el-form-item label="设置翻译">
                 <el-autocomplete v-model="formData.translation" :fetch-suggestions="querySearch"
-                                 @change="translationChanged"
-                                 @select="translationSelected"
+                                 @change="findType"
+                                 @select="findType"
                 />
               </el-form-item>
               <el-form-item label="标签类型">
-                <el-select v-model="formData.type" placeholder="请选择活动区域">
+                <el-select v-model="formData.type" placeholder="" filterable >
                   <el-option v-for="item in tagTypes" :label="item" :value="item"/>
                 </el-select>
                 <el-button type="primary" style="margin-left: 10px" @click="setTranslation(props.row.tag,formData)">提交</el-button>
@@ -41,19 +41,32 @@
             </el-form>
             <div v-if="props.row.suggest && props.row.suggest.length>0">
               翻译建议：
-              <el-tag v-for="item in props.row.suggest" class="clickableTag" @click="formData.translation=item">{{ item }}</el-tag>
+              <el-tag v-for="item in props.row.suggest" class="clickableTag" @click="formData.translation=item;findType()">{{ item }}</el-tag>
             </div>
             <div v-if="props.row.suggestRedirect && props.row.suggestRedirect.length>0">
               重定向建议
+              <el-tag type="warning" v-for="item in props.row.suggestRedirect" class="clickableTag"
+                      @click="formData.translation=item.customTranslation;findType()">{{ item.customTranslation }}</el-tag>
+            </div>
+            <div v-if="props.row.examples && props.row.examples.length>0">
+              <image-preview :src-list="props.row.examples"/>
             </div>
           </template>
         </el-table-column>
 
-        <el-table-column prop="tag" label="原标签名"/>
-        <el-table-column prop="originalTranslation" label="原翻译"/>
-        <el-table-column prop="customTranslation" label="自定义翻译"/>
-        <el-table-column prop="redirect" v-if="params.filter.type==='重定向'" label="重定向"/>
-        <el-table-column prop="type" label="标签类型"/>
+        <el-table-column prop="tag" label="原标签名" width="300px"/>
+        <el-table-column prop="originalTranslation" label="原翻译" width="300px"/>
+        <el-table-column prop="customTranslation" v-if="params.filter.type==='已完成'" label="自定义翻译" width="300px"/>
+        <el-table-column prop="redirect" v-if="params.filter.type==='重定向'" label="重定向" width="300px"/>
+        <el-table-column prop="type" label="标签类型" width="100px"/>
+        <el-table-column  label="操作" >
+          <template #default="props">
+            <el-link class="operationLink" target="_blank" :href="`https://fanyi.baidu.com/#${getLanguage(props.row.tag)}/zh/${props.row.tag}`">百度翻译</el-link>
+            <el-link class="operationLink" target="_blank" :href="`https://www.baidu.com/s?wd=${props.row.tag}`">百度搜索</el-link>
+            <el-link class="operationLink" target="_blank" :href="`https://dic.pixiv.net/a/${props.row.tag}`">Pixiv字典</el-link>
+            <el-link class="operationLink" target="_blank" :href="`https://www.pixiv.net/tags/${props.row.tag}/artworks?s_mode=s_tag`">Pixiv搜索</el-link>
+          </template>
+        </el-table-column>
       </el-table>
 
     </el-main>
@@ -64,9 +77,11 @@
 
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
+import ImagePreview from "@/components/my/image-preview";
 
 export default {
   name: "tags",
+  components: {ImagePreview},
   data() {
     return {
       params: {
@@ -93,19 +108,30 @@ export default {
     ...mapActions("tags", [`page`, `findAllCompletedTags`, `findAllTypes`, `setCustomTranslation`]),
     ...mapMutations("tags", [`setParams`]),
     ...mapGetters("tags", [`getParams`]),
-    translationChanged(value) {
-      this.findType(value)
+    getLanguage(s){
+      let code = s.charCodeAt(0);
+      let language = 'jp'
+      if (code >= 44032 && code <= 55215) {
+        language = 'kor'
+      }
+      if (code >= 65 && code <= 90) {
+        language = 'en'
+      }
+       if (code >= 97 && code <= 122) {
+        language = 'en'
+      }
+      return language;
     },
-    translationSelected(value) {
-      this.findType(value.value)
-    },
-    findType(value) {
+    findType() {
       const pattern = /^(.+)[(（](.+)[)）]$/g
-      const filter = this.allCompletedTags.filter(i => i.customTranslation === value);
+      const skinPattern = /^(.+)<(.+)>$/g
+      const filter = this.allCompletedTags.filter(i => i.customTranslation === this.formData.translation);
       if (filter.length === 1) {
         this.formData.type = filter[0].type;
-      }else if (pattern.exec(value)){
+      }else if (pattern.exec(this.formData.translation)){
         this.formData.type = "人物+作品";
+      }else if (skinPattern.exec(this.formData.translation)){
+        this.formData.type = "皮肤";
       }
     },
     getRowKey(row) {
@@ -174,5 +200,8 @@ export default {
 <style scoped>
 .clickableTag {
   cursor: pointer;
+}
+.operationLink{
+  margin-left: 5px;
 }
 </style>
