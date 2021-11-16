@@ -28,6 +28,8 @@
             <el-form inline>
               <el-form-item label="设置翻译">
                 <el-autocomplete v-model="formData.translation" :fetch-suggestions="querySearch"
+                                 @change="translationChanged"
+                                 @select="translationSelected"
                 />
               </el-form-item>
               <el-form-item label="标签类型">
@@ -38,7 +40,8 @@
               </el-form-item>
             </el-form>
             <div v-if="props.row.suggest && props.row.suggest.length>0">
-              翻译建议：<el-tag v-for="item in props.row.suggest" class="clickableTag" @click="formData">{{item}}</el-tag>
+              翻译建议：
+              <el-tag v-for="item in props.row.suggest" class="clickableTag" @click="formData.translation=item">{{ item }}</el-tag>
             </div>
             <div v-if="props.row.suggestRedirect && props.row.suggestRedirect.length>0">
               重定向建议
@@ -73,9 +76,9 @@ export default {
         page: 1,
         size: 10
       },
-      formData:{
-        translation:"",
-        type:"",
+      formData: {
+        translation: "",
+        type: "",
       },
       total: 100,
       pageData: [],
@@ -90,10 +93,25 @@ export default {
     ...mapActions("tags", [`page`, `findAllCompletedTags`, `findAllTypes`, `setCustomTranslation`]),
     ...mapMutations("tags", [`setParams`]),
     ...mapGetters("tags", [`getParams`]),
-    getRowKey(row){
+    translationChanged(value) {
+      this.findType(value)
+    },
+    translationSelected(value) {
+      this.findType(value.value)
+    },
+    findType(value) {
+      const pattern = /^(.+)[(（](.+)[)）]$/g
+      const filter = this.allCompletedTags.filter(i => i.customTranslation === value);
+      if (filter.length === 1) {
+        this.formData.type = filter[0].type;
+      }else if (pattern.exec(value)){
+        this.formData.type = "人物+作品";
+      }
+    },
+    getRowKey(row) {
       return row.tag
     },
-    expandChange(row,rows){
+    expandChange(row, rows) {
       if (rows.length === 0) {
         return;
       }
@@ -101,7 +119,7 @@ export default {
       this.expandRowKeys = []
       this.expandRowKeys.push(this.getRowKey(row))
     },
-    setTranslation(tag,formData) {
+    setTranslation(tag, formData) {
       const params = Object.assign({}, {tag}, formData);
       this.setCustomTranslation(params).then(() => {
         this.refresh()
@@ -129,14 +147,15 @@ export default {
         if (res.code === 2000) {
           this.pageData = res.data.records;
           this.total = res.data.total;
-          this.pageData.forEach(i=>i.formData={tag:"",translation:"",type:""})
-          console.log(this.pageData)
+
+          this.formData = {}
+          this.expandRowKeys = []
+          this.expandRowKeys.push(this.getRowKey(this.pageData[0]))
         }
       })
       this.findAllCompletedTags().then(res => {
         if (res.code === 2000) {
           this.allCompletedTags = res.data;
-          console.log(this.allCompletedTags)
         }
       })
     },
@@ -153,7 +172,7 @@ export default {
 </script>
 
 <style scoped>
-.clickableTag{
+.clickableTag {
   cursor: pointer;
 }
 </style>
