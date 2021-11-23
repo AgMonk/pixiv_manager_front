@@ -16,7 +16,7 @@ export const routes = [
   {
     path: '/config',
     name: '配置',
-    component: () => import(/* webpackChunkName: "about" */ '../views/config.vue')
+    component: () => import('../views/config.vue')
   }
 ]
 

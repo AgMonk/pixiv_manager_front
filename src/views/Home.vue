@@ -8,11 +8,21 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
+import methods from "methods";
+import {mapActions} from "vuex";
 
 export default {
   name: 'Home',
   components: {
     HelloWorld
+  },
+  methods:{
+    ...mapActions('illust',[`getDetail`]),
+    ...mapActions('pixivFollow',[`getFollow`]),
+  },
+  mounted() {
+    this.getDetail(94286060)
+    this.getFollow(1);
   }
 }
 </script>

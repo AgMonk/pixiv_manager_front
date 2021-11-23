@@ -7,8 +7,27 @@ export const request = axios.create({
     method:"post",
 
 })
+export const pixivNetRequest = axios.create({
+    baseURL:"/pixiv-net/",
+    // baseURL:"/pixivNet/",
+    timeout:5000,
+    method:"get",
+})
 
 request.interceptors.response.use(response => {
+    // return response.data
+    let data = response.data;
+    if (data.code === 2000) {
+        return data
+    }
+    // ElMessage.error(data.message);
+    throw data;
+}, (error) => {
+    console.error(error)
+    ElMessage.error(error.message);
+    return Promise.reject(error)
+});
+pixivNetRequest.interceptors.response.use(response => {
     // return response.data
     let data = response.data;
     if (data.code === 2000) {
