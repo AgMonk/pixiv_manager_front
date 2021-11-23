@@ -58,7 +58,7 @@
         <el-table-column prop="originalTranslation" label="原翻译" width="300px"/>
         <el-table-column prop="customTranslation" v-if="params.filter.type==='已完成'" label="自定义翻译" width="300px"/>
         <el-table-column prop="redirect" v-if="params.filter.type==='重定向'" label="重定向" width="300px"/>
-        <el-table-column prop="type" label="标签类型" width="100px"/>
+        <el-table-column prop="type" label="标签类型"  v-if="params.filter.type==='已完成'" width="100px"/>
         <el-table-column  label="操作" >
           <template #default="props">
             <el-link class="operationLink" target="_blank" :href="`https://fanyi.baidu.com/#${getLanguage(props.row.tag)}/zh/${props.row.tag}`">百度翻译</el-link>

@@ -29,7 +29,15 @@
 <script>
 import MyNavigationItem from "@/components/my/my-navigation-item";
 import MyNavigation from "@/components/my/my-navigation";
+import {mapMutations} from "vuex";
 export default {
-  components: {MyNavigation, MyNavigationItem}
+  components: {MyNavigation, MyNavigationItem},
+
+  methods:{
+    ...mapMutations(`config`,[`loadConfig`])
+  },
+  mounted(){
+    this.loadConfig();
+  }
 }
 </script>
