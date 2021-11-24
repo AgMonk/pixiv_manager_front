@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 import tags from "@/store/tags";
 import config from "@/store/config";
-import illust from "@/store/illust";
+import pixivIllust from "@/store/pixivIllust";
 import pixivFollow from "@/store/pixivFollow";
 
 export default createStore({
@@ -12,7 +12,7 @@ export default createStore({
   actions: {
   },
   modules: {
-    tags,config,illust,pixivFollow
+    tags,config,pixivIllust,pixivFollow
   },
 
 })

@@ -10,7 +10,7 @@ export const request = axios.create({
 export const pixivNetRequest = axios.create({
     baseURL:"/pixiv-net/",
     // baseURL:"/pixivNet/",
-    timeout:5000,
+    timeout:10000,
     method:"get",
 })
 
@@ -30,11 +30,10 @@ request.interceptors.response.use(response => {
 pixivNetRequest.interceptors.response.use(response => {
     // return response.data
     let data = response.data;
-    if (data.code === 2000) {
-        return data
+    if (data.error) {
+        throw data.message
     }
-    // ElMessage.error(data.message);
-    throw data;
+    return data.body;
 }, (error) => {
     console.error(error)
     ElMessage.error(error.message);

@@ -17,12 +17,23 @@ export const routes = [
     path: '/config',
     name: '配置',
     component: () => import('../views/config.vue')
-  }
+  },
+]
+
+const hiddenRoute =[
+    {
+        path: '/artwork/:pid',
+        name: '作品详情',
+        component: () => import('../views/artwork.vue')
+    },
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes:[
+      ...routes,
+      ...hiddenRoute,
+  ]
 })
 
 export default router

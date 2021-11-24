@@ -17,7 +17,7 @@ export default {
     HelloWorld
   },
   methods:{
-    ...mapActions('illust',[`getDetail`]),
+    ...mapActions('pixivIllust',[`getDetail`]),
     ...mapActions('pixivFollow',[`getFollow`]),
   },
   mounted() {
