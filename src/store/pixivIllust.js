@@ -1,5 +1,6 @@
 // pixiv作品详情
 import {pixivNetRequest} from "@/assets/js/request";
+import {checkCache} from "@/assets/js/CacheUtils";
 
 const prefix = '/ajax/illust/'
 
@@ -26,21 +27,12 @@ export default {
                         body.urls[key] = urls
                     })
                 }
-
-                    console.log(body)
-                //加入缓存
-                const time = Math.floor(new Date().getTime() / 1000 / 60)
-                state.cache[body.id] = {body, time};
                 return body
             })
         },
         //检查缓存中是否有作品详情，有则直接使用
         findDetail: ({dispatch, commit, state}, pid) => {
-            const time = Math.floor(new Date().getTime() / 1000 / 60)
-            if (state.cache.hasOwnProperty(pid + "") && time - state.cache[pid + ""].time < 60) {
-                return new Promise((r) => r(state.cache[pid + ""].body))
-            }
-            return dispatch(`getDetail`, pid);
+            return checkCache(state.cache,pid+"",60*60,()=>dispatch("getDetail",pid))
         },
 
         method: ({dispatch, commit, state}, payload) => {

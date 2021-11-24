@@ -6,7 +6,7 @@
  * @param expires 有效时间（秒）
  * @param requestMethod 请求方法
  */
-const checkCache = (cacheObj,key,expires,requestMethod) =>{
+export const checkCache = (cacheObj,key,expires,requestMethod) =>{
     //当前时间（秒）
     const time = Math.floor(new Date().getTime() / 1000 )
     if (cacheObj.hasOwnProperty(key) &&  time-cacheObj[key].time<expires){
