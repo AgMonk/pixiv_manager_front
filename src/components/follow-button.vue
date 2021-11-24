@@ -8,7 +8,7 @@ export default {
   name: "follow-button",
   data() {
     return {
-      defaultSize:"medium"
+      defaultSize:"mini"
     }
   },
   methods: {

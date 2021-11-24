@@ -25,17 +25,24 @@
                     hide-on-click-modal
           />
 
-<!--       todo 描述 标签   -->
+          <!--       todo 描述 标签   -->
         </el-main>
         <el-aside>
           <!--作者信息-->
           <div>
-            <el-descriptions title="作者信息" border :column="1">
-              <template #extra>
-                <follow-button v-if="user && user.hasOwnProperty('isFollowed')" :uid="user.userId" :is-followed="user.isFollowed" />
+            <el-descriptions border :column="1">
+              <template #title>
+                <el-avatar :size="50" v-if="user && user.hasOwnProperty('image')" :src="config.imgDomain+user.image"/>
+                <!--                todo 应该修改为本站地址-->
+                <el-link type="primary" :href="`https://www.pixiv.net/users/${illust.userId}`" target="_blank">{{ illust.userName }}</el-link>
               </template>
-              <el-descriptions-item label="名称">{{illust.userName}}</el-descriptions-item>
-              <el-descriptions-item label="uid">{{illust.userId}}</el-descriptions-item>
+              <template #extra>
+                <follow-button v-if="user && user.hasOwnProperty('isFollowed')" :uid="user.userId" :is-followed="user.isFollowed"/>
+              </template>
+              <el-descriptions-item label="作品目录">
+                <!--                todo 应该修改为本站地址-->
+                <el-link type="primary" :href="`https://www.pixiv.net/users/${illust.userId}/artworks`" target="_blank">作品目录</el-link>
+              </el-descriptions-item>
             </el-descriptions>
           </div>
           <!--作品信息-->
@@ -46,12 +53,12 @@
                   <bookmark-icon v-if="illust" :data="illust.bookmarkData"/>
                   <span style="font-size:25px;">{{ illust.bookmarkCount }}</span>
                 </template>
-                <el-descriptions-item label="pid">{{illust.id}}</el-descriptions-item>
-                <el-descriptions-item label="创建时间">{{new Date(illust.createDate).format("yyyy-MM-dd hh:mm")}}</el-descriptions-item>
-                <el-descriptions-item label="上传时间">{{new Date(illust.uploadDate).format("yyyy-MM-dd hh:mm")}}</el-descriptions-item>
-                <el-descriptions-item label="尺寸">{{illust.width}}x{{illust.height}}</el-descriptions-item>
-                <el-descriptions-item label="喜欢">{{illust.likeCount}}</el-descriptions-item>
-                <el-descriptions-item label="浏览">{{illust.viewCount}}</el-descriptions-item>
+                <el-descriptions-item label="pid">{{ illust.id }}</el-descriptions-item>
+                <el-descriptions-item label="创建时间">{{ new Date(illust.createDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
+                <el-descriptions-item label="上传时间">{{ new Date(illust.uploadDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
+                <el-descriptions-item label="尺寸">{{ illust.width }}x{{ illust.height }}</el-descriptions-item>
+                <el-descriptions-item label="喜欢">{{ illust.likeCount }}</el-descriptions-item>
+                <el-descriptions-item label="浏览">{{ illust.viewCount }}</el-descriptions-item>
                 <el-descriptions-item label="下载原图">
 
                 </el-descriptions-item>
@@ -79,7 +86,7 @@ export default {
   data() {
     return {
       illust: {},
-      user:{},
+      user: {},
       loading: false,
     }
   },
@@ -101,7 +108,7 @@ export default {
         this.handleUrls()
         this.loading = false;
 
-        this.findUserInfo(this.illust.userId).then(res=>this.user = copyObj(res))
+        this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
 
       })
     }

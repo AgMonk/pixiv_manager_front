@@ -27,6 +27,7 @@ export default {
                         body.urls[key] = urls
                     })
                 }
+                console.log(body)
                 return body
             })
         },
