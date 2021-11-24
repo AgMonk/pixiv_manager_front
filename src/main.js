@@ -8,6 +8,14 @@ import 'element-plus/dist/index.css'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import './assets/js/utils'
 
-createApp(App).use(store).use(router)
+import {Star,StarFilled,AlarmClock} from "@element-plus/icons"
+
+
+createApp(App)
+    .component("star",Star)
+    .component("alarm-clock",AlarmClock)
+    .component("star-filled",StarFilled)
+    .use(store)
+    .use(router)
     .use(ElementPlus, {locale: zhCn,})
     .mount('#app')
