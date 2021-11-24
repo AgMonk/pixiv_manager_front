@@ -13,7 +13,6 @@ export default {
   name: "bookmark-icon",
   data() {
     return {
-      bookmarked: true,
       defaultSize: 30,
       loading: false,
       bookmarkData: {},
@@ -34,9 +33,14 @@ export default {
     },
   },
   mounted() {
-    this.bookmarkData = this.data ? copyObj(this.data) : {}
   },
-  watch: {},
+  watch: {
+    "data":{
+      handler: function (e) {
+        this.bookmarkData = e ? copyObj(e) : {}
+      }
+    }
+  },
   props: {
     "size": {type: Number},
     "data": {type: Object},

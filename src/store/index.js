@@ -3,6 +3,7 @@ import tags from "@/store/tags";
 import config from "@/store/config";
 import pixivIllust from "@/store/pixivIllust";
 import pixivFollow from "@/store/pixivFollow";
+import pixivUser from "@/store/pixivUser";
 
 export default createStore({
   state: {
@@ -12,7 +13,7 @@ export default createStore({
   actions: {
   },
   modules: {
-    tags,config,pixivIllust,pixivFollow
+    tags,config,pixivIllust,pixivFollow,pixivUser
   },
 
 })

@@ -27,7 +27,7 @@ export default {
                     })
                 }
 
-                console.log(body)
+                    console.log(body)
                 //加入缓存
                 const time = Math.floor(new Date().getTime() / 1000 / 60)
                 state.cache[body.id] = {body, time};
