@@ -60,7 +60,18 @@
                 <el-descriptions-item label="喜欢">{{ illust.likeCount }}</el-descriptions-item>
                 <el-descriptions-item label="浏览">{{ illust.viewCount }}</el-descriptions-item>
                 <el-descriptions-item label="下载原图">
-
+                  <el-collapse>
+                    <el-collapse-item title="下载地址(点击展开)" name="1" v-if="illust.urls && illust.urls.hasOwnProperty('original')">
+                      <el-link
+                          v-for="url in illust.urls.original"
+                          :href="url"
+                          :download="url.substring(url.lastIndexOf('/')+1)"
+                          target="_blank"
+                      >
+                        {{ url.substring(url.lastIndexOf("/") + 1) }}
+                      </el-link>
+                    </el-collapse-item>
+                  </el-collapse>
                 </el-descriptions-item>
                 <el-descriptions-item label="上传时间">{{}}</el-descriptions-item>
               </el-descriptions>
