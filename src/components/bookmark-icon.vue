@@ -32,9 +32,12 @@ export default {
         }).then(res => {
           console.log(res)
           this.$emit("bookmark-del-success")
-          this.$message.success("取消收藏成功")
+          this.$message.success(`取消收藏成功 pid = ${this.pid}`)
           this.loading = false;
           this.bookmarkData = {}
+        }).catch(res=>{
+          this.$message.warn("请求超时请重试")
+          this.loading = false;
         })
       } else {
         //添加收藏
@@ -43,10 +46,12 @@ export default {
           token: this.token
         }).then(res => {
           this.$emit("bookmark-add-success")
-          this.$message.success("收藏成功")
+          this.$message.success(`收藏成功 pid = ${this.pid}`)
           this.loading = false;
           this.bookmarkData = {id:res.last_bookmark_id}
-          console.log(res)
+        }).catch(res=>{
+          this.$message.warn("请求超时请重试")
+          this.loading = false;
         })
       }
     },

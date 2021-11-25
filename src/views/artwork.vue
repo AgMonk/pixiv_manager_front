@@ -1,11 +1,6 @@
 <template>
   <el-container direction="vertical" v-loading="loading">
     <!--  <el-container direction="horizontal">-->
-    <el-header>
-      <h3>
-        <el-link style="font-size: 25px;" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{ illust.title }}</el-link>
-      </h3>
-    </el-header>
     <el-main>
       <el-container>
         <el-main>
@@ -26,8 +21,17 @@
                     :preview-src-list="illust.urls['original']"
                     hide-on-click-modal
           />
-
-          <!--       todo 描述 标签   -->
+          <!--          标题-->
+          <div style="text-align: left;margin-top: 5px">
+            <el-link style="font-size: 25px;" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{ illust.title }}</el-link>
+          </div>
+          <!--          描述-->
+          <div style="text-align: left;margin-top: 5px" v-html="illust.illustComment">
+          </div>
+          <!--          标签-->
+          <div v-if="illust.tags && illust.tags.tags" style="text-align: left;margin-top: 15px">
+            <pixiv-tag v-for="item in illust.tags.tags" :data="item" style="margin-left: 5px"/>
+          </div>
         </el-main>
         <el-aside>
           <!--作者信息-->
@@ -57,12 +61,12 @@
           <!--作品信息-->
           <div>
             <div>
-              <el-descriptions border :column="1" >
+              <el-descriptions border :column="1">
                 <template #title>
-                  <span >作品信息 共：{{ illust.pageCount }} 张</span>
+                  <span>作品信息 共：{{ illust.pageCount }} 张</span>
                 </template>
                 <template #extra>
-                  <div >
+                  <div>
                     <bookmark-icon
                         v-if="illust && illust.id"
                         :token="config.token"
@@ -113,10 +117,11 @@ import {copyObj} from "@/assets/js/utils";
 import BookmarkIcon from "@/components/bookmark-icon";
 import FollowButton from "@/components/follow-button";
 import axios from "axios";
+import PixivTag from "@/components/pixiv-tag";
 
 export default {
   name: "artwork",
-  components: {FollowButton, BookmarkIcon},
+  components: {PixivTag, FollowButton, BookmarkIcon},
   data() {
     return {
       illust: {},
@@ -171,16 +176,16 @@ export default {
     },
     refresh(force) {
       this.loading = true;
-      const method = force?this.getDetail:this.findDetail
+      const method = force ? this.getDetail : this.findDetail
       method(this.$route.params.pid).then(res => {
-        if (force){
+        if (force) {
           this.$message.success("刷新成功")
         }
         this.illust = copyObj(res)
         this.handleUrls()
         this.loading = false;
         this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
-      }).catch(()=>{
+      }).catch(() => {
         this.loading = false;
 
       })
