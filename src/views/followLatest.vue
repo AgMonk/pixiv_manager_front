@@ -4,6 +4,11 @@
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <el-button type="primary" @click="refresh(true)" size="mini">刷新</el-button>
+      <el-pagination layout="prev, pager, next, jumper"
+                     :page-count="65535"
+                     :pager-count="9"
+                     @current-change="goPage"
+                     v-model:current-page="page" />
     </el-header>
     <el-main v-loading="loading">
       <div v-if="!loading">
@@ -30,6 +35,7 @@ export default {
   components: {IllustCard},
   data() {
     return {
+      page:1,
       loading: true,
       illust: [],
     }
@@ -39,10 +45,14 @@ export default {
   },
   methods: {
     ...mapActions('pixivFollowLatest', [`findFollowLatest`, `getFollowLatest`]),
+    goPage(e){
+      this.$router.push(`/follow-latest/${e}`)
+    },
     refresh(force) {
+      this.page = parseInt(this.$route.params.page);
       this.loading = true;
       const method = force ? this.getFollowLatest : this.findFollowLatest;
-      method(this.$route.params.page).then(res => {
+      method(this.page).then(res => {
         this.illust = copyObj(res);
         this.illust.forEach(item => {
           item.url = this.config.imgDomain + item.url
@@ -58,7 +68,13 @@ export default {
   mounted() {
     this.refresh(false);
   },
-  watch: {},
+  watch: {
+    "$route":{
+      handler:function (e) {
+        this.refresh(false);
+      }
+    }
+  },
   props: {},
 }
 

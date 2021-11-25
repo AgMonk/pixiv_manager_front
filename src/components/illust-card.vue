@@ -5,6 +5,7 @@
         <el-image
           style="width: 184px; height: 184px"
           :src="data.url"
+          lazy
       />
       </router-link>
     </div>
