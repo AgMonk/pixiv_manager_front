@@ -50,6 +50,7 @@ export default {
     },
   },
   mounted() {
+    this.bookmarkData = copyObj(this.data)
   },
   watch: {
     "data": {

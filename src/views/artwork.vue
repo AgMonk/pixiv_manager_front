@@ -3,7 +3,7 @@
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <h3>
-        <el-link style="font-size: 25px;color:white" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{ illust.title }}</el-link>
+        <el-link style="font-size: 25px;" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{ illust.title }}</el-link>
       </h3>
     </el-header>
     <el-main>
@@ -57,12 +57,12 @@
           <!--作品信息-->
           <div>
             <div>
-              <el-descriptions border :column="1" style="background-color: black">
+              <el-descriptions border :column="1" >
                 <template #title>
-                  <span style="color:white">作品信息 共：{{ illust.pageCount }} 张</span>
+                  <span >作品信息 共：{{ illust.pageCount }} 张</span>
                 </template>
                 <template #extra>
-                  <div style="background-color: white">
+                  <div >
                     <bookmark-icon
                         v-if="illust && illust.id"
                         :token="config.token"
