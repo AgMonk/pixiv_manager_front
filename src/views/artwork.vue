@@ -59,12 +59,12 @@
             <div>
               <el-descriptions border :column="1" style="background-color: black">
                 <template #title>
-                  <span style="color:white">作品信息{{ illust.pageCount }} 张</span>
+                  <span style="color:white">作品信息 共：{{ illust.pageCount }} 张</span>
                 </template>
                 <template #extra>
                   <div style="background-color: white">
                     <bookmark-icon
-                        v-if="illust"
+                        v-if="illust && illust.id"
                         :token="config.token"
                         :pid="illust.id"
                         :data="illust.bookmarkData"
@@ -93,6 +93,9 @@
                     </el-collapse-item>
                   </el-collapse>
                   <el-button type="primary" @click="downloadWithAria2" size="mini">发送到Aria2</el-button>
+                </el-descriptions-item>
+                <el-descriptions-item label="强制刷新">
+                  <el-button type="primary" @click="refresh(true)" size="mini">刷新</el-button>
                 </el-descriptions-item>
                 <el-descriptions-item label="上传时间">{{}}</el-descriptions-item>
               </el-descriptions>
@@ -172,16 +175,21 @@ export default {
       this.loading = true;
       const method = force?this.getDetail:this.findDetail
       method(this.$route.params.pid).then(res => {
+        if (force){
+          this.$message.success("刷新成功")
+        }
         this.illust = copyObj(res)
         this.handleUrls()
         this.loading = false;
         this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
+      }).catch(()=>{
+        this.loading = false;
+
       })
     },
   },
   mounted() {
     this.refresh(false)
-    console.log(this.config)
   },
   watch: {},
   props: {},

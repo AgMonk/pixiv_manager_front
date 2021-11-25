@@ -7,6 +7,7 @@ export const request = axios.create({
     method: "post",
 
 })
+//get请求
 export const pixivNetRequest = axios.create({
     baseURL: "/pixiv-net/",
     timeout: 10000,
@@ -15,13 +16,13 @@ export const pixivNetRequest = axios.create({
     //     'Cache-Control': 'no cache'
     // }
 })
-
+//常规post请求
 export const pixivNetPostRequest = axios.create({
     baseURL: "/pixiv-net/",
     timeout: 10000,
     method: "post",
 })
-
+//formData post请求
 export const pixivNetPostFormDataRequest = axios.create({
     baseURL: "/pixiv-net/",
     timeout: 10000,
