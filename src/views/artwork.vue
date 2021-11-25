@@ -72,6 +72,7 @@
                       </el-link>
                     </el-collapse-item>
                   </el-collapse>
+                  <el-button type="primary" @click="downloadWithAria2" size="mini">发送到Aria2</el-button>
                 </el-descriptions-item>
                 <el-descriptions-item label="上传时间">{{}}</el-descriptions-item>
               </el-descriptions>
@@ -90,6 +91,7 @@ import {mapActions, mapState} from "vuex";
 import {copyObj} from "@/assets/js/utils";
 import BookmarkIcon from "@/components/bookmark-icon";
 import FollowButton from "@/components/follow-button";
+import axios from "axios";
 
 export default {
   name: "artwork",
@@ -107,6 +109,36 @@ export default {
   methods: {
     ...mapActions("pixivIllust", [`findDetail`, `getDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
+    downloadWithAria2() {
+      let id = new Date().getTime();
+      this.illust.urls.original.forEach(url => {
+        const original = url.substring(url.indexOf('/img-original'));
+        const params = {
+          method: 'aria2.addUri',
+          id,
+          jsonrpc: 2.0,
+          params: [
+            [
+              `https://i.pixiv.re${original}`,
+              `https://i.pximg.net${original}`,
+            ],
+            {
+              dir: this.config.aria2.dir,
+              fileName: url.substring(url.lastIndexOf('/') + 1),
+              referer: "*",
+            }
+          ],
+        }
+        axios.post('/aria2', params).then(res => {
+          if (res.status === 200) {
+            if (res.data.id === id && res.data.result !== undefined && res.data.result.length === 16) {
+              this.$message.success('提交下载任务成功')
+            }
+          }
+        })
+      })
+
+    },
     handleUrls() {
       Object.keys(this.illust.urls).forEach(key => {
         this.illust.urls[key] = this.illust.urls[key].map(item => this.config.imgDomain + item)
@@ -126,6 +158,7 @@ export default {
   },
   mounted() {
     this.refresh()
+    console.log(this.config)
   },
   watch: {},
   props: {},

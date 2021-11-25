@@ -8,6 +8,9 @@ export default {
         config: {
             // 图片域名
             imgDomain: "/pximg",
+            aria2:{
+                dir:'d:/download/aria2',
+            }
         },
     },
     mutations: {
@@ -18,6 +21,7 @@ export default {
         loadConfig: (state) => {
             const cache = getCache("config");
             state.config = cache?cache:state.config;
+            console.log(state.config)
         }
     },
     actions: {

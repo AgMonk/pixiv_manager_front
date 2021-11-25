@@ -14,6 +14,9 @@
             <el-radio-button label="/pximg">pximg.org</el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="aria2下载目录" v-if="myConfig.aria2">
+          <el-input v-model="myConfig.aria2.dir" @change="changeConfig" />
+        </el-form-item>
       </el-form>
 
 
