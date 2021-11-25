@@ -85,7 +85,9 @@ export default {
   watch: {
     "$route": {
       handler: function (e) {
-        this.refresh(false);
+        if (e.fullPath.startsWith("/follow-latest")) {
+          this.refresh(false);
+        }
       }
     }
   },
