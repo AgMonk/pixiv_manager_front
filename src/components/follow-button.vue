@@ -1,6 +1,6 @@
 <template>
-  <el-button :size="size?size:defaultSize" v-if="isFollowed" type="info" @click="cancelFollow">已关注</el-button>
-  <el-button :size="size?size:defaultSize" v-else type="primary" @click="followUser">关注</el-button>
+  <el-button :disabled="disabled" :size="size?size:defaultSize" v-if="isFollowed" type="info" @click="cancelFollow">已关注</el-button>
+  <el-button :disabled="disabled" :size="size?size:defaultSize" v-else type="primary" @click="followUser">关注</el-button>
 </template>
 
 <script>
@@ -10,6 +10,7 @@ export default {
   name: "follow-button",
   data() {
     return {
+      disabled:false,
       defaultSize: "mini"
     }
   },
@@ -18,19 +19,33 @@ export default {
   },
   methods: {
     ...mapActions("pixivUser", [`getUserInfo`]),
-    ...mapActions("bookmark", [`follow`]),
+    ...mapActions("bookmark", [`follow`, `unfollow`]),
     cancelFollow() {
+      this.disabled = true;
       console.log(`取消关注 uid = ${this.uid}`)
-      /*todo 取消关注请求 */
+      this.unfollow({
+        uid: this.uid,
+        token: this.config.token,
+      }).then(res => {
+        if (res.type === 'bookuser' && this.uid ===res.user_id ) {
+          this.$message.success("取消关注成功")
+          this.$emit("unfollow-success", this.uid)
+          this.disabled = false;
+        } else {
+          console.log(res)
+        }
+      })
     },
     followUser() {
+      this.disabled = true;
       console.log(`关注 uid = ${this.uid}`)
       this.follow({
         uid: this.uid,
         token: this.config.token,
       }).then(() => {
-        this.$message.success("关注成功")
+        this.disabled = false;
         this.$emit("follow-success", this.uid)
+        this.$message.success("关注成功")
       })
     },
   },

@@ -26,6 +26,21 @@ export default {
                 }
             })
         },
+        unfollow: ({dispatch, commit, state}, {uid, token}) => {
+            const formData = {
+                mode: "del",
+                type: "bookuser",
+                id: uid,
+            }
+            return pixivNetPostFormDataRequest({
+                url: '/rpc_group_setting.php',
+                data: formData,
+                headers: {
+                    'x-csrf-token': token,
+                }
+            })
+        },
+
         method: ({dispatch, commit, state}, payload) => {
 
         },

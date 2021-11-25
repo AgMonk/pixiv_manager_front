@@ -42,6 +42,7 @@
                     :uid="user.userId"
                     :is-followed="user.isFollowed"
                     @follow-success="followSuccess"
+                    @unfollow-success="followSuccess"
                 />
               </template>
               <el-descriptions-item label="作品目录">
@@ -115,6 +116,7 @@ export default {
     ...mapActions("pixivIllust", [`findDetail`, `getDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     followSuccess(uid){
+      this.user.isFollowed = !this.user.isFollowed
       this.getUserInfo(uid).then(res => this.user = copyObj(res))
     },
     downloadWithAria2() {

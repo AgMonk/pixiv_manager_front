@@ -31,7 +31,7 @@ export const pixivNetPostFormDataRequest = axios.create({
         }
     ],
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
     }
 })
 
@@ -56,6 +56,14 @@ pixivNetRequest.interceptors.response.use(response => {
         throw data.message
     }
     return data.body;
+}, (error) => {
+    console.error(error)
+    ElMessage.error(error.message);
+    return Promise.reject(error)
+});
+pixivNetPostFormDataRequest.interceptors.response.use(response => {
+    // return response.data
+    return response.data;
 }, (error) => {
     console.error(error)
     ElMessage.error(error.message);
