@@ -2,7 +2,7 @@
   <el-container direction="vertical" v-loading="loading">
     <!--  <el-container direction="horizontal">-->
     <el-header>
-      <h3>{{ illust.title }}</h3>
+      <h3><el-link style="font-size: 25px" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{illust.title}}</el-link></h3>
     </el-header>
     <el-main>
       <el-container>
@@ -37,7 +37,12 @@
                 <el-link type="primary" :href="`https://www.pixiv.net/users/${illust.userId}`" target="_blank">{{ illust.userName }}</el-link>
               </template>
               <template #extra>
-                <follow-button v-if="user && user.hasOwnProperty('isFollowed')" :uid="user.userId" :is-followed="user.isFollowed"/>
+                <follow-button
+                    v-if="user && user.hasOwnProperty('isFollowed')"
+                    :uid="user.userId"
+                    :is-followed="user.isFollowed"
+                    @follow-success="followSuccess"
+                />
               </template>
               <el-descriptions-item label="作品目录">
                 <!--                todo 应该修改为本站地址-->
@@ -109,6 +114,9 @@ export default {
   methods: {
     ...mapActions("pixivIllust", [`findDetail`, `getDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
+    followSuccess(uid){
+      this.getUserInfo(uid).then(res => this.user = copyObj(res))
+    },
     downloadWithAria2() {
       let id = new Date().getTime();
       this.illust.urls.original.forEach(url => {
@@ -150,9 +158,7 @@ export default {
         this.illust = copyObj(res)
         this.handleUrls()
         this.loading = false;
-
         this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
-
       })
     }
   },

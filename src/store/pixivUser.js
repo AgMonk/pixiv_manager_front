@@ -19,6 +19,7 @@ export default {
                     full:0,
                     lang:'zh',
                 },
+
             }).then(res=>{
                 res.image = res.image.replace("https://i.pximg.net","")
                 res.imageBig = res.imageBig.replace("https://i.pximg.net","")

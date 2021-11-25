@@ -3,7 +3,7 @@
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <el-button type="primary" @click="dialogShow.setCookie=true;" >设置Cookie</el-button>
-      <el-button type="primary" @click="" >设置Token</el-button>
+      <el-button type="primary" @click="dialogShow.setToken=true;" >设置Token</el-button>
     </el-header>
 
     <el-main>
@@ -25,7 +25,12 @@
       <el-dialog title="设置Cookie" v-model="dialogShow.setCookie">
         <el-input type="textarea" placeholder="placeholder" v-model="cookie" />
         <el-button type="danger" @click="cookie=``" >重置</el-button>
-        <el-button type="primary" @click="setCookie">确认</el-button>
+        <el-button type="primary" @click="setCookie();dialogShow.setCookie=false">确认</el-button>
+      </el-dialog>
+    <el-dialog title="设置Token" v-model="dialogShow.setToken">
+        <el-input  placeholder="placeholder" v-model="token" />
+        <el-button type="danger" @click="token=``" >重置</el-button>
+        <el-button type="primary" @click="setToken();dialogShow.setToken=false">确认</el-button>
       </el-dialog>
 
 
@@ -45,6 +50,7 @@ export default {
   data() {
     return {
       cookie:"",
+      token:"",
       dialogShow:{
         setCookie:false,
         setToken:false,
@@ -63,6 +69,10 @@ export default {
     },
     setCookie(){
       setCookies(this.cookie,60,"/pixiv-net")
+    },
+    setToken(){
+      this.myConfig.token = this.token;
+      this.updateConfig(this.myConfig)
     },
   },
   mounted() {

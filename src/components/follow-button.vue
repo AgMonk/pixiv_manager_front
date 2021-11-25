@@ -1,39 +1,52 @@
 <template>
- <el-button :size="size?size:defaultSize" v-if="isFollowed" type="info" @click="cancelFollow">已关注</el-button>
- <el-button :size="size?size:defaultSize" v-else type="primary" @click="follow">关注</el-button>
+  <el-button :size="size?size:defaultSize" v-if="isFollowed" type="info" @click="cancelFollow">已关注</el-button>
+  <el-button :size="size?size:defaultSize" v-else type="primary" @click="followUser">关注</el-button>
 </template>
 
 <script>
+import {mapActions, mapState} from "vuex";
+
 export default {
   name: "follow-button",
   data() {
     return {
-      defaultSize:"mini"
+      defaultSize: "mini"
     }
   },
+  computed: {
+    ...mapState(`config`, [`config`])
+  },
   methods: {
-    cancelFollow(){
+    ...mapActions("pixivUser", [`getUserInfo`]),
+    ...mapActions("bookmark", [`follow`]),
+    cancelFollow() {
       console.log(`取消关注 uid = ${this.uid}`)
       /*todo 取消关注请求 */
     },
-    follow(){
+    followUser() {
       console.log(`关注 uid = ${this.uid}`)
-      /*todo 关注请求 */
+      this.follow({
+        uid: this.uid,
+        token: this.config.token,
+      }).then(() => {
+        this.$message.success("关注成功")
+        this.$emit("follow-success", this.uid)
+      })
     },
   },
   mounted() {
   },
   watch: {},
   props: {
-    uid:{
+    uid: {
       required: true
     },
-    isFollowed:{
+    isFollowed: {
       required: true,
-      type:Boolean,
+      type: Boolean,
     },
-    size:{
-      type:String,
+    size: {
+      type: String,
     }
   },
 }

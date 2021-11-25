@@ -2,17 +2,39 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 
 export const request = axios.create({
-    baseURL:"/api/",
-    timeout:5000,
-    method:"post",
+    baseURL: "/api/",
+    timeout: 5000,
+    method: "post",
 
 })
 export const pixivNetRequest = axios.create({
-    baseURL:"/pixiv-net/",
-    // baseURL:"/pixivNet/",
-    timeout:10000,
-    method:"get",
+    baseURL: "/pixiv-net/",
+    timeout: 10000,
+    method: "get",
+    // headers: {
+    //     'Cache-Control': 'no cache'
+    // }
 })
+
+export const pixivNetPostFormDataRequest = axios.create({
+    baseURL: "/pixiv-net/",
+    timeout: 10000,
+    method: "post",
+    transformRequest: [
+        function (data) {
+            let ret = ''
+            for (let it in data) {
+                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            ret = ret.substring(0, ret.lastIndexOf('&'));
+            return ret
+        }
+    ],
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+})
+
 
 request.interceptors.response.use(response => {
     // return response.data
