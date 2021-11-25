@@ -4,16 +4,27 @@
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <el-button type="primary" @click="refresh(true)" size="mini">刷新</el-button>
+      过滤已收藏:
+      <el-switch
+          v-model="filterBookmarked"
+          @change="(e)=>this.setConfig({key:'filterBookmarked',value:e})"
+          style="margin-left: 24px"
+          inline-prompt
+          active-icon="是"
+          inactive-icon="否"
+      >
+      </el-switch>
       <el-pagination layout="prev, pager, next, jumper"
                      :page-count="65535"
                      :pager-count="9"
                      @current-change="goPage"
-                     v-model:current-page="page" />
+                     v-model:current-page="page"/>
     </el-header>
     <el-main v-loading="loading">
       <div v-if="!loading">
         <el-row>
-          <el-col v-for="item in illust" :xs="12" :sm="8" :md="6" :lg="4" :xl="3">
+          <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
+                  v-for="item in !filterBookmarked?illust:illust.filter(i=>!i.bookmarkData)">
             <illust-card :data="item"/>
           </el-col>
         </el-row>
@@ -26,7 +37,7 @@
 </template>
 
 <script>
-import {mapActions, mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 
@@ -35,8 +46,9 @@ export default {
   components: {IllustCard},
   data() {
     return {
-      page:1,
+      page: 1,
       loading: true,
+      filterBookmarked: false,
       illust: [],
     }
   },
@@ -45,7 +57,8 @@ export default {
   },
   methods: {
     ...mapActions('pixivFollowLatest', [`findFollowLatest`, `getFollowLatest`]),
-    goPage(e){
+    ...mapMutations(`config`, [`setConfig`]),
+    goPage(e) {
       this.$router.push(`/follow-latest/${e}`)
     },
     refresh(force) {
@@ -67,10 +80,11 @@ export default {
   },
   mounted() {
     this.refresh(false);
+    this.filterBookmarked = this.config.filterBookmarked;
   },
   watch: {
-    "$route":{
-      handler:function (e) {
+    "$route": {
+      handler: function (e) {
         this.refresh(false);
       }
     }
