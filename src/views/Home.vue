@@ -8,7 +8,6 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
-import methods from "methods";
 import {mapActions} from "vuex";
 
 export default {
@@ -17,12 +16,8 @@ export default {
     HelloWorld
   },
   methods:{
-    ...mapActions('pixivIllust',[`getDetail`]),
-    ...mapActions('pixivFollow',[`getFollow`]),
   },
   mounted() {
-    this.getDetail(94286060)
-    this.getFollow(1);
   }
 }
 </script>

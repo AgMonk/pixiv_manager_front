@@ -20,7 +20,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("bookmark", [`bookmarkAdd`, `bookmarkDel`]),
+    ...mapActions("pixivBookmark", [`bookmarkAdd`, `bookmarkDel`]),
     click() {
       /*todo 发送请求 收藏作品 或 取消收藏 */
       this.loading = true;
@@ -34,6 +34,7 @@ export default {
           this.$emit("bookmark-del-success")
           this.$message.success("取消收藏成功")
           this.loading = false;
+          this.bookmarkData = {}
         })
       } else {
         //添加收藏
@@ -41,16 +42,17 @@ export default {
           pid: this.pid,
           token: this.token
         }).then(res => {
-          console.log(res)
           this.$emit("bookmark-add-success")
           this.$message.success("收藏成功")
           this.loading = false;
+          this.bookmarkData = {id:res.last_bookmark_id}
+          console.log(res)
         })
       }
     },
   },
   mounted() {
-    this.bookmarkData = copyObj(this.data)
+    this.bookmarkData = this.data?copyObj(this.data):{}
   },
   watch: {
     "data": {

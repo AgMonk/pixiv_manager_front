@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     ...mapActions("pixivUser", [`getUserInfo`]),
-    ...mapActions("bookmark", [`follow`, `unfollow`]),
+    ...mapActions("pixivBookmark", [`follow`, `unfollow`]),
     cancelFollow() {
       this.disabled = true;
       console.log(`取消关注 uid = ${this.uid}`)

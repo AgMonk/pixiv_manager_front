@@ -68,8 +68,6 @@
                         :token="config.token"
                         :pid="illust.id"
                         :data="illust.bookmarkData"
-                        @bookmark-add-success="refresh(true)"
-                        @bookmark-del-success="refresh(true)"
                     />
                     <span style="font-size:25px;">{{ illust.bookmarkCount }}</span></div>
                 </template>
