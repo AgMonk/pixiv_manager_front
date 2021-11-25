@@ -2,7 +2,9 @@
   <el-container direction="vertical" v-loading="loading">
     <!--  <el-container direction="horizontal">-->
     <el-header>
-      <h3><el-link style="font-size: 25px" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{illust.title}}</el-link></h3>
+      <h3>
+        <el-link style="font-size: 25px;color:white" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{ illust.title }}</el-link>
+      </h3>
     </el-header>
     <el-main>
       <el-container>
@@ -40,6 +42,7 @@
                 <follow-button
                     v-if="user && user.hasOwnProperty('isFollowed')"
                     :uid="user.userId"
+                    :token="config.token"
                     :is-followed="user.isFollowed"
                     @follow-success="followSuccess"
                     @unfollow-success="followSuccess"
@@ -54,10 +57,21 @@
           <!--作品信息-->
           <div>
             <div>
-              <el-descriptions :title="`作品信息 (${illust.pageCount} 张)`" border :column="1">
+              <el-descriptions border :column="1" style="background-color: black">
+                <template #title>
+                  <span style="color:white">作品信息{{ illust.pageCount }} 张</span>
+                </template>
                 <template #extra>
-                  <bookmark-icon v-if="illust" :data="illust.bookmarkData"/>
-                  <span style="font-size:25px;">{{ illust.bookmarkCount }}</span>
+                  <div style="background-color: white">
+                    <bookmark-icon
+                        v-if="illust"
+                        :token="config.token"
+                        :pid="illust.id"
+                        :data="illust.bookmarkData"
+                        @bookmark-add-success="refresh(true)"
+                        @bookmark-del-success="refresh(true)"
+                    />
+                    <span style="font-size:25px;">{{ illust.bookmarkCount }}</span></div>
                 </template>
                 <el-descriptions-item label="pid">{{ illust.id }}</el-descriptions-item>
                 <el-descriptions-item label="创建时间">{{ new Date(illust.createDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
@@ -115,7 +129,7 @@ export default {
   methods: {
     ...mapActions("pixivIllust", [`findDetail`, `getDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
-    followSuccess(uid){
+    followSuccess(uid) {
       this.user.isFollowed = !this.user.isFollowed
       this.getUserInfo(uid).then(res => this.user = copyObj(res))
     },
@@ -154,18 +168,19 @@ export default {
         this.illust.urls[key] = this.illust.urls[key].map(item => this.config.imgDomain + item)
       })
     },
-    refresh() {
+    refresh(force) {
       this.loading = true;
-      this.findDetail(this.$route.params.pid).then(res => {
+      const method = force?this.getDetail:this.findDetail
+      method(this.$route.params.pid).then(res => {
         this.illust = copyObj(res)
         this.handleUrls()
         this.loading = false;
         this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
       })
-    }
+    },
   },
   mounted() {
-    this.refresh()
+    this.refresh(false)
     console.log(this.config)
   },
   watch: {},

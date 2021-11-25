@@ -16,6 +16,12 @@ export const pixivNetRequest = axios.create({
     // }
 })
 
+export const pixivNetPostRequest = axios.create({
+    baseURL: "/pixiv-net/",
+    timeout: 10000,
+    method: "post",
+})
+
 export const pixivNetPostFormDataRequest = axios.create({
     baseURL: "/pixiv-net/",
     timeout: 10000,
@@ -50,6 +56,18 @@ request.interceptors.response.use(response => {
     return Promise.reject(error)
 });
 pixivNetRequest.interceptors.response.use(response => {
+    // return response.data
+    let data = response.data;
+    if (data.error) {
+        throw data.message
+    }
+    return data.body;
+}, (error) => {
+    console.error(error)
+    ElMessage.error(error.message);
+    return Promise.reject(error)
+});
+pixivNetPostRequest.interceptors.response.use(response => {
     // return response.data
     let data = response.data;
     if (data.error) {

@@ -1,13 +1,14 @@
 <template>
-    <el-icon :size="size?size:defaultSize">
-      <alarm-clock v-if="loading"/>
-      <star-filled class="clickAble" v-else-if="bookmarkData &&bookmarkData.hasOwnProperty('id')" @click="click"/>
-      <star class="clickAble" v-else @click="click"/>
-    </el-icon>
+  <el-icon :size="size?size:defaultSize">
+    <alarm-clock v-if="loading"/>
+    <star-filled class="clickAble" v-else-if="bookmarkData &&bookmarkData.hasOwnProperty('id')" @click="click"/>
+    <star class="clickAble" v-else @click="click"/>
+  </el-icon>
 </template>
 
 <script>
 import {copyObj} from "@/assets/js/utils";
+import {mapActions} from "vuex";
 
 export default {
   name: "bookmark-icon",
@@ -19,23 +20,39 @@ export default {
     }
   },
   methods: {
+    ...mapActions("bookmark", [`bookmarkAdd`, `bookmarkDel`]),
     click() {
-      if (this.loading) {
-        return;
-      }
       /*todo 发送请求 收藏作品 或 取消收藏 */
-      console.log(1)
       this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-
-      }, 3000);
+      //取消收藏
+      if (this.bookmarkData && this.bookmarkData.id) {
+        this.bookmarkDel({
+          bookmarkId: this.bookmarkData.id,
+          token: this.token
+        }).then(res => {
+          console.log(res)
+          this.$emit("bookmark-del-success")
+          this.$message.success("取消收藏成功")
+          this.loading = false;
+        })
+      } else {
+        //添加收藏
+        this.bookmarkAdd({
+          pid: this.pid,
+          token: this.token
+        }).then(res => {
+          console.log(res)
+          this.$emit("bookmark-add-success")
+          this.$message.success("收藏成功")
+          this.loading = false;
+        })
+      }
     },
   },
   mounted() {
   },
   watch: {
-    "data":{
+    "data": {
       handler: function (e) {
         this.bookmarkData = e ? copyObj(e) : {}
       }
@@ -44,6 +61,15 @@ export default {
   props: {
     "size": {type: Number},
     "data": {type: Object},
+    token: {
+      required: true,
+      type: String,
+    },
+    pid: {
+      required: true,
+      type: String,
+    },
+
   },
 }
 

@@ -14,9 +14,6 @@ export default {
       defaultSize: "mini"
     }
   },
-  computed: {
-    ...mapState(`config`, [`config`])
-  },
   methods: {
     ...mapActions("pixivUser", [`getUserInfo`]),
     ...mapActions("bookmark", [`follow`, `unfollow`]),
@@ -25,7 +22,7 @@ export default {
       console.log(`取消关注 uid = ${this.uid}`)
       this.unfollow({
         uid: this.uid,
-        token: this.config.token,
+        token: this.token,
       }).then(res => {
         if (res.type === 'bookuser' && this.uid ===res.user_id ) {
           this.$message.success("取消关注成功")
@@ -41,7 +38,7 @@ export default {
       console.log(`关注 uid = ${this.uid}`)
       this.follow({
         uid: this.uid,
-        token: this.config.token,
+        token: this.token,
       }).then(() => {
         this.disabled = false;
         this.$emit("follow-success", this.uid)
@@ -55,6 +52,10 @@ export default {
   props: {
     uid: {
       required: true
+    },
+    token: {
+      required: true,
+      type:String,
     },
     isFollowed: {
       required: true,
