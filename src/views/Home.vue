@@ -9,6 +9,7 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import {mapActions} from "vuex";
+import {getCookieMap} from "@/assets/js/cookieUtils";
 
 export default {
   name: 'Home',
@@ -19,18 +20,7 @@ export default {
     ...mapActions('pixivUserIllust',[`findProfileAll`,`findProfileIllusts`])
   },
   mounted() {
-    const uid = 32544133;
-    this.findProfileAll(uid).then(res=>{
-      console.log(res)
-      this.findProfileIllusts({
-        uid,
-        work_category:'illust',
-        page:8,
-        size:48,
-      }).then(r=>{
-        console.log(r)
-      })
-    })
+    console.log(getCookieMap())
   }
 }
 </script>

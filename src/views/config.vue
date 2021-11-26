@@ -68,11 +68,15 @@ export default {
       this.updateConfig(this.myConfig);
     },
     setCookie(){
+      const pattern = /PHPSESSID=(\d+)/g
+      const group = pattern.exec(this.cookie)
+      this.myConfig.uid = group[1];
+      this.changeConfig()
       setCookies(this.cookie,60,"/pixiv-net")
     },
     setToken(){
       this.myConfig.token = this.token;
-      this.updateConfig(this.myConfig)
+      this.changeConfig()
     },
   },
   mounted() {
