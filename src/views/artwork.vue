@@ -62,7 +62,7 @@
             <div>
               <el-descriptions border :column="1">
                 <template #title>
-                  <span>作品信息 共：{{ illust.pageCount }} 张</span>
+                  <span style="color:white">作品信息 共：{{ illust.pageCount }} 张</span>
                 </template>
                 <template #extra>
                   <div>
