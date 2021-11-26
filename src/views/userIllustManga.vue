@@ -2,8 +2,10 @@
 
   <el-container direction="vertical">
     <el-header height="100px" style="text-align: left" v-if="author">
+<!--      作者头像 -->
       <el-avatar :size="100" v-if="author.hasOwnProperty('imageBig')" :src="author.imageBig"/>
       <span style="color:white;font-size: 35px;">{{author.name}}</span>
+<!--      关注按钮-->
       <follow-button
           style="margin-left: 20px"
           size="medium"
@@ -14,9 +16,14 @@
           @follow-success="author.isFollowed = true"
           @unfollow-success="author.isFollowed = false"
       />
+<!--      插画 漫画切换-->
     </el-header>
     <el-main>
-      <el-container direction="vertical">
+      <el-radio-group v-model="type" @change="goPage(1)">
+        <el-radio-button label="illust" :disabled="totalCount.illust===0">插画({{totalCount.illust}})</el-radio-button>
+        <el-radio-button label="manga" :disabled="totalCount.manga===0">漫画({{totalCount.manga}})</el-radio-button>
+      </el-radio-group>
+      <el-container direction="vertical" style="margin-top: 20px">
         <!--  <el-container direction="horizontal">-->
         <el-header>
           <el-button type="primary" @click="init(true)" size="mini">刷新</el-button>
@@ -69,6 +76,11 @@ export default {
       total:100,
       illust: [],
       author:{},
+      type:'',
+      totalCount:{
+        illust:0,
+        manga:0,
+      }
     }
   },
   computed: {
@@ -79,7 +91,7 @@ export default {
     ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`,`getProfileIllusts`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     goPage(e) {
-      this.$router.push(`/user/${this.$route.params.userId}/${this.$route.params.type}/${e}`)
+      this.$router.push(`/user/${this.$route.params.userId}/${this.type}/${e}`)
     },
     switchFilterBookmarked(e){
       this.setConfig({key:'filterBookmarked',value:e})
@@ -107,11 +119,15 @@ export default {
     init(force) {
       // noinspection JSCheckFunctionSignatures
       this.page = parseInt(this.$route.params.page)
+      this.type = this.$route.params.type;
+
       this.loading = true
       this.findProfileAll(this.$route.params.userId).then(res => {
         console.log(res)
         this.loading = false
         this.total = Object.keys(res[this.$route.params.type]).length;
+        this.totalCount.illust = Object.keys(res['illust']).length;
+        this.totalCount.manga = Object.keys(res['manga']).length;
         this.findPage(force)
       })
 
