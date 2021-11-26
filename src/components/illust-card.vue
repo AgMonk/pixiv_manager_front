@@ -17,15 +17,14 @@
     <div>
       <el-row>
         <el-col style="text-align: left" :span="18">
-          <!--                todo 应该修改为本站地址-->
           <el-avatar :size="24" v-if="!disableAvatar&&data.hasOwnProperty('profileImageUrl')" :src="data.profileImageUrl"/>
-          <el-link type="primary"
-                   v-if="!disableAvatar"
-                   :href="`https://www.pixiv.net/users/${data.userId}/artworks`"
-                   target="_blank"
-                   style="font-size: 18px;"
-          >{{ data.userName.substring(0, Math.min(6, data.userName.length)) }}
-          </el-link>
+          <router-link :to="`/user/${data.userId}/illust/1`">
+            <el-link type="primary"
+                     v-if="!disableAvatar"
+                     style="font-size: 18px;"
+            >{{ data.userName.substring(0, Math.min(6, data.userName.length)) }}
+            </el-link>
+          </router-link>
         </el-col>
         <el-col style="text-align: right" :span="6">
           <bookmark-icon :pid="data.id" :token="config.token" :data="data.bookmarkData"/>

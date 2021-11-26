@@ -31,7 +31,7 @@ export default {
             })
         },
         findFollowLatest: ({dispatch, commit, state}, p) => {
-            return checkCache(state.cache,p+"",5*60,()=>dispatch("getFollowLatest",p))
+            return checkCache(state.cache,p+"",60,()=>dispatch("getFollowLatest",p))
         },
         method: ({dispatch, commit, state}, payload) => {
 

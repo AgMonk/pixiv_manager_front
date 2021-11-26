@@ -39,8 +39,7 @@
             <el-descriptions border :column="1">
               <template #title>
                 <el-avatar :size="50" v-if="user && user.hasOwnProperty('image')" :src="config.imgDomain+user.image"/>
-                <!--                todo 应该修改为本站地址-->
-                <el-link type="primary" :href="`https://www.pixiv.net/users/${illust.userId}`" target="_blank">{{ illust.userName }}</el-link>
+                <el-link type="primary" :href="`/user/${illust.userId}/illust/1`" target="_blank">{{ illust.userName }}</el-link>
               </template>
               <template #extra>
                 <follow-button
@@ -53,8 +52,9 @@
                 />
               </template>
               <el-descriptions-item label="作品目录">
-                <!--                todo 应该修改为本站地址-->
-                <el-link type="primary" :href="`https://www.pixiv.net/users/${illust.userId}/artworks`" target="_blank">作品目录</el-link>
+                <router-link :to="`/user/${illust.userId}/illust/1`">
+                  <el-link type="primary">作品目录</el-link>
+                </router-link>
               </el-descriptions-item>
             </el-descriptions>
           </div>
