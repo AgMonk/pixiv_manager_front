@@ -11,8 +11,8 @@
           active-icon="是"
           inactive-icon="否"
       />
-      <el-pagination layout="prev, pager, next, jumper"
-                     :page-count="pageCount"
+      <el-pagination layout="total,prev, pager, next, jumper"
+                     :total="total"
                      v-model:page-size="size"
                      @current-change="goPage"
                      v-model:current-page="page"/>
@@ -45,7 +45,7 @@ export default {
       filterBookmarked: false,
       page: 1,
       size: 48,
-      pageCount: 100,
+      total:100,
       illust: [],
     }
   },
@@ -81,8 +81,7 @@ export default {
         console.log(res)
         this.loading = false
         const total = Object.keys(res[this.$route.params.type]).length
-        console.log(`作品总计 ${total} 个`)
-        this.pageCount = Math.floor(total / this.size) + (total % this.size === 0 ? 0 : 1);
+        this.total = total;
         this.findPage()
       })
     }
