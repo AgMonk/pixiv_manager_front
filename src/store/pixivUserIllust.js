@@ -33,14 +33,21 @@ export default {
          * @param lang zh
          * @returns {Promise<AxiosResponse<any>>}
          */
-        getProfileIllusts: ({dispatch, commit, state}, {uid, ids, work_category, is_first_page, lang = 'zh'}) => {
-            const params = {ids, work_category, is_first_page, lang};
+        getProfileIllusts: ({dispatch, commit, state}, {uid, page, size, work_category, lang = 'zh'}) => {
+            //pid数组 降序
+            const pidArray = Object.keys(state.all[uid].body[work_category]).reverse();
+            const start = (page - 1) * size;
+            const end =  Math.min(pidArray.length,start+size);
+            //需要查询的pid
+            const ids = pidArray.slice(start,end);
+            const is_first_page = page===1?1:0;
+
             return pixivNetRequest({
                     url: `/ajax/user/${uid}/profile/illusts`,
                     headers: {
                         'x-user-id': uid,
                     },
-                    params,
+                    params:{uid, ids, work_category, is_first_page, lang},
                 },
             ).then(res => {
                 const a = [];
@@ -58,17 +65,10 @@ export default {
             if (!state.all.hasOwnProperty(userId)) {
                 throw "还未获取id列表"
             }
-            //pid数组 降序
-            const pidArray = Object.keys(state.all[userId].body[work_category]).reverse();
-            const start = (page - 1) * size;
-            const end =  Math.min(pidArray.length,start+size);
-            //需要查询的pid
-            const ids = pidArray.slice(start,end);
-            const is_first_page = page===1?1:0;
             //缓存key
             const key = `${uid} type:${work_category} size:${size} page:${page}`;
             return checkCache(state.illusts, key, 60 * 60, () => dispatch("getProfileIllusts"
-                , {uid, ids, work_category, is_first_page, lang}))
+                , {uid, page, size, work_category, lang }))
         },
         method: ({dispatch, commit, state}, payload) => {
 

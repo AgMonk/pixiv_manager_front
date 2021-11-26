@@ -2,6 +2,7 @@
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
     <el-header>
+      <el-button type="primary" @click="init(true)" size="mini">刷新</el-button>
       过滤已收藏:
       <el-switch
           v-model="filterBookmarked"
@@ -54,13 +55,14 @@ export default {
   },
   methods: {
     ...mapMutations(`config`, [`setConfig`]),
-    ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`]),
+    ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`,`getProfileIllusts`]),
     goPage(e) {
       this.$router.push(`/user/${this.$route.params.userId}/${this.$route.params.type}/${e}`)
     },
-    findPage() {
+    findPage(force) {
+      const method = force?this.getProfileIllusts:this.findProfileIllusts;
       this.loading = true
-      return this.findProfileIllusts({
+      return method({
         uid: this.$route.params.userId,
         page: this.page,
         size: this.size,
@@ -73,16 +75,15 @@ export default {
         return res;
       })
     },
-    init() {
+    init(force) {
       // noinspection JSCheckFunctionSignatures
       this.page = parseInt(this.$route.params.page)
       this.loading = true
       this.findProfileAll(this.$route.params.userId).then(res => {
         console.log(res)
         this.loading = false
-        const total = Object.keys(res[this.$route.params.type]).length
-        this.total = total;
-        this.findPage()
+        this.total = Object.keys(res[this.$route.params.type]).length;
+        this.findPage(force)
       })
     }
   },
