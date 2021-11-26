@@ -2,23 +2,10 @@
 
   <el-container direction="vertical">
     <el-header height="100px" style="text-align: left" v-if="author">
-<!--      作者头像 -->
-      <el-avatar :size="100" v-if="author.hasOwnProperty('imageBig')" :src="author.imageBig"/>
-      <span style="color:white;font-size: 35px;">{{author.name}}</span>
-<!--      关注按钮-->
-      <follow-button
-          style="margin-left: 20px"
-          size="medium"
-          v-if="author && author.hasOwnProperty('isFollowed')"
-          :uid="author.userId"
-          :token="config.token"
-          :is-followed="author.isFollowed"
-          @follow-success="author.isFollowed = true"
-          @unfollow-success="author.isFollowed = false"
-      />
-<!--      插画 漫画切换-->
+      <user-avatar :user="author" />
     </el-header>
     <el-main>
+<!--      插画 漫画切换-->
       <el-radio-group v-model="type" @change="goPage(1)">
         <el-radio-button label="illust" :disabled="totalCount.illust===0">插画({{totalCount.illust}})</el-radio-button>
         <el-radio-button label="manga" :disabled="totalCount.manga===0">漫画({{totalCount.manga}})</el-radio-button>
@@ -63,10 +50,11 @@ import {mapActions, mapMutations, mapState} from "vuex";
 import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import FollowButton from "@/components/follow-button";
+import UserAvatar from "@/components/user-avatar";
 
 export default {
   name: "userIllustManga",
-  components: {FollowButton, IllustCard},
+  components: {UserAvatar, FollowButton, IllustCard},
   data() {
     return {
       loading: false,

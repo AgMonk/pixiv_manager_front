@@ -45,7 +45,6 @@
                 <follow-button
                     v-if="user && user.hasOwnProperty('isFollowed')"
                     :uid="user.userId"
-                    :token="config.token"
                     :is-followed="user.isFollowed"
                     @follow-success="followSuccess"
                     @unfollow-success="followSuccess"
@@ -69,7 +68,6 @@
                   <div>
                     <bookmark-icon
                         v-if="illust && illust.id"
-                        :token="config.token"
                         :pid="illust.id"
                         :data="illust.bookmarkData"
                     />

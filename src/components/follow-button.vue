@@ -1,6 +1,6 @@
 <template>
-  <el-button :disabled="disabled" :size="size?size:defaultSize" v-if="isFollowed" type="info" @click="cancelFollow">已关注</el-button>
-  <el-button :disabled="disabled" :size="size?size:defaultSize" v-else type="primary" @click="followUser">关注</el-button>
+  <el-button :disabled="disabled" :size="size" v-if="isFollowed" type="info" @click="cancelFollow">已关注</el-button>
+  <el-button :disabled="disabled" :size="size" v-else type="primary" @click="followUser">关注</el-button>
 </template>
 
 <script>
@@ -14,6 +14,9 @@ export default {
       defaultSize: "mini"
     }
   },
+  computed: {
+    ...mapState(`config`, [`config`])
+  },
   methods: {
     ...mapActions("pixivUser", [`getUserInfo`]),
     ...mapActions("pixivBookmark", [`follow`, `unfollow`]),
@@ -22,7 +25,7 @@ export default {
       console.log(`取消关注 uid = ${this.uid}`)
       this.unfollow({
         uid: this.uid,
-        token: this.token,
+        token: this.config.token,
       }).then(res => {
         if (res.type === 'bookuser' && this.uid ===res.user_id ) {
           this.$message.success("取消关注成功")
@@ -38,7 +41,7 @@ export default {
       console.log(`关注 uid = ${this.uid}`)
       this.follow({
         uid: this.uid,
-        token: this.token,
+        token: this.config.token,
       }).then(() => {
         this.disabled = false;
         this.$emit("follow-success", this.uid)
@@ -53,16 +56,13 @@ export default {
     uid: {
       required: true
     },
-    token: {
-      required: true,
-      type:String,
-    },
     isFollowed: {
       required: true,
       type: Boolean,
     },
     size: {
       type: String,
+      default:"mini",
     }
   },
 }

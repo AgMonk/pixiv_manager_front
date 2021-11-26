@@ -8,7 +8,7 @@
 
 <script>
 import {copyObj} from "@/assets/js/utils";
-import {mapActions} from "vuex";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "bookmark-icon",
@@ -20,6 +20,9 @@ export default {
       bookmarkData: {},
     }
   },
+  computed: {
+    ...mapState(`config`, [`config`])
+  },
   methods: {
     ...mapActions("pixivBookmark", [`bookmarkAdd`, `bookmarkDel`]),
     click() {
@@ -29,7 +32,7 @@ export default {
         this.color ='white'
         this.bookmarkDel({
           bookmarkId: this.bookmarkData.id,
-          token: this.token
+          token: this.config.token
         }).then(res => {
           console.log(res)
           this.$emit("bookmark-del-success")
@@ -46,7 +49,7 @@ export default {
         //添加收藏
         this.bookmarkAdd({
           pid: this.pid,
-          token: this.token
+          token: this.config.token
         }).then(res => {
           this.$emit("bookmark-add-success")
           this.$message.success(`收藏成功 pid = ${this.pid}`)
@@ -82,10 +85,6 @@ export default {
   props: {
     "size": {type: Number},
     "data": {type: Object},
-    token: {
-      required: true,
-      type: String,
-    },
     pid: {
       required: true,
       type: String,
