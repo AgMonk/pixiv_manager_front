@@ -18,8 +18,9 @@
       <el-row>
         <el-col style="text-align: left" :span="18">
           <!--                todo 应该修改为本站地址-->
-          <el-avatar :size="24" v-if="data.hasOwnProperty('profileImageUrl')" :src="data.profileImageUrl"/>
+          <el-avatar :size="24" v-if="!disableAvatar&&data.hasOwnProperty('profileImageUrl')" :src="data.profileImageUrl"/>
           <el-link type="primary"
+                   v-if="!disableAvatar"
                    :href="`https://www.pixiv.net/users/${data.userId}/artworks`"
                    target="_blank"
                    style="font-size: 18px;"
@@ -59,6 +60,9 @@ export default {
     data: {
       type: Object,
       required: true,
+    },
+    disableAvatar:{
+      type: Boolean
     }
   },
 }

@@ -11,7 +11,7 @@ export const routes = [
     {
         path: '/follow-latest',
         name: '关注作品',
-        redirect:'/follow-latest/1'
+        redirect: '/follow-latest/1'
     },
     {
         path: '/tags',
@@ -37,6 +37,11 @@ const hiddenRoute = [
         path: '/follow-latest/:page',
         component: () => import('../views/followLatest.vue')
     },
+    {
+        path: '/user/:userId/:type/:page',
+        component: () => import('../views/userIllustManga.vue')
+    },
+
 ]
 
 const router = createRouter({

@@ -12,8 +12,7 @@
           inline-prompt
           active-icon="是"
           inactive-icon="否"
-      >
-      </el-switch>
+      />
       <el-pagination layout="prev, pager, next, jumper"
                      :page-count="65535"
                      :pager-count="9"
