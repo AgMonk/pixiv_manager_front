@@ -26,7 +26,7 @@
             <el-link style="font-size: 25px;" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{ illust.title }}</el-link>
           </div>
           <!--          描述-->
-          <div style="text-align: left;margin-top: 5px" v-html="illust.illustComment">
+          <div style="text-align: left;margin-top: 5px;color:white" v-html="illust.illustComment">
           </div>
           <!--          标签-->
           <div v-if="illust.tags && illust.tags.tags" style="text-align: left;margin-top: 15px">

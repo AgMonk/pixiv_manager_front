@@ -1,14 +1,15 @@
 <template>
 
   <el-container direction="vertical">
-    <el-header height="100px" style="text-align: left" v-if="author">
-      <user-avatar :user="author" />
+    <el-header height="100px" style="text-align: left" v-if="user">
+      <user-avatar :user="user"/>
     </el-header>
     <el-main>
-<!--      插画 漫画切换-->
+      <!--      插画 漫画切换-->
       <el-radio-group v-model="type" @change="goPage(1)">
-        <el-radio-button label="illust" :disabled="totalCount.illust===0">插画({{totalCount.illust}})</el-radio-button>
-        <el-radio-button label="manga" :disabled="totalCount.manga===0">漫画({{totalCount.manga}})</el-radio-button>
+        <el-radio-button label="illust" :disabled="totalCount.illust===0">插画({{ totalCount.illust }})</el-radio-button>
+        <el-radio-button label="manga" :disabled="totalCount.manga===0">漫画({{ totalCount.manga }})</el-radio-button>
+        <el-radio-button label="bookmark">收藏({{ totalCount.bookmark }})</el-radio-button>
       </el-radio-group>
       <el-container direction="vertical" style="margin-top: 20px">
         <!--  <el-container direction="horizontal">-->
@@ -61,13 +62,15 @@ export default {
       filterBookmarked: false,
       page: 1,
       size: 48,
-      total:100,
+      total: 100,
       illust: [],
-      author:{},
-      type:'',
-      totalCount:{
-        illust:0,
-        manga:0,
+      type: '',
+      tag: '',
+      user: {},
+      totalCount: {
+        illust: 0,
+        manga: 0,
+        bookmark: 0,
       }
     }
   },
@@ -76,33 +79,56 @@ export default {
   },
   methods: {
     ...mapMutations(`config`, [`setConfig`]),
-    ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`,`getProfileIllusts`]),
+    ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`, `getProfileIllusts`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
+    ...mapActions("pixivBookmark", [`findBookmark`, `getBookmark`]),
     goPage(e) {
       this.$router.push(`/user/${this.$route.params.userId}/${this.type}/${e}`)
     },
-    switchFilterBookmarked(e){
-      this.setConfig({key:'filterBookmarked',value:e})
+    switchFilterBookmarked(e) {
+      this.setConfig({key: 'filterBookmarked', value: e})
       this.findPage(false)
     },
     findPage(force) {
-      const method = force?this.getProfileIllusts:this.findProfileIllusts;
       this.loading = true
-      return method({
-        uid: this.$route.params.userId,
-        page: this.page,
-        size: this.size,
-        work_category: this.$route.params.type
-      }).then(res => {
-        this.loading = false
-        this.illust = copyObj(res)
-        this.illust.forEach(i => i.url = this.config.imgDomain + i.url)
-        if (this.filterBookmarked){
-          this.illust = this.illust.filter(i=>!i.bookmarkData)
-        }
-        console.log(res)
-        return res;
-      })
+      if (['illust', 'manga'].includes(this.type)) {
+        const method = force ? this.getProfileIllusts : this.findProfileIllusts;
+        return method({
+          uid: this.$route.params.userId,
+          page: this.page,
+          size: this.size,
+          work_category: this.$route.params.type
+        }).then(res => {
+          this.loading = false
+          this.illust = copyObj(res)
+          this.illust.forEach(i => i.url = this.config.imgDomain + i.url)
+          if (this.filterBookmarked) {
+            this.illust = this.illust.filter(i => !i.bookmarkData)
+          }
+          console.log(res)
+          return res;
+        })
+      } else if ('bookmark' === this.type) {
+        const method = force ? this.getBookmark : this.findBookmark;
+        return this.findBookmark({
+          uid: this.$route.params.userId,
+          tag: this.tag,
+          page: this.page,
+        }).then(res => {
+          console.log(res)
+          this.loading = false
+          this.total = res.total
+          this.totalCount.bookmark = res.total
+          this.illust = copyObj(res.works)
+          this.illust.forEach(i => i.url = this.config.imgDomain + i.url)
+          if (this.filterBookmarked && this.$route.params.userId !== this.config.uid) {
+            this.illust = this.illust.filter(i => !i.bookmarkData)
+          }
+          console.log(this.illust)
+        }).catch(res => {
+          this.loading = false
+        })
+      }
     },
     init(force) {
       // noinspection JSCheckFunctionSignatures
@@ -113,17 +139,20 @@ export default {
       this.findProfileAll(this.$route.params.userId).then(res => {
         console.log(res)
         this.loading = false
-        this.total = Object.keys(res[this.$route.params.type]).length;
         this.totalCount.illust = Object.keys(res['illust']).length;
         this.totalCount.manga = Object.keys(res['manga']).length;
+        //插画和漫画时 请求数据
+        if (['illust', 'manga'].includes(this.type)) {
+          this.total = Object.keys(res[this.type]).length;
+        }
         this.findPage(force)
       })
 
-      this.findUserInfo(this.$route.params.userId).then(res=>{
-        this.author = copyObj(res);
-        this.author.image = this.config.imgDomain+this.author.image
-        this.author.imageBig = this.config.imgDomain+this.author.imageBig
-        console.log(this.author)
+      this.findUserInfo(this.$route.params.userId).then(res => {
+        this.user = copyObj(res);
+        this.user.image = this.config.imgDomain + this.user.image
+        this.user.imageBig = this.config.imgDomain + this.user.imageBig
+        console.log(this.user)
       })
     }
   },

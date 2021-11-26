@@ -87,7 +87,6 @@ export default {
     "data": {type: Object},
     pid: {
       required: true,
-      type: String,
     },
 
   },

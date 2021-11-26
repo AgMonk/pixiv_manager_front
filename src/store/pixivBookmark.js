@@ -1,12 +1,15 @@
 // 收藏和关注
 
-import {pixivNetPostFormDataRequest, pixivNetPostRequest} from "@/assets/js/request";
+import {pixivNetPostFormDataRequest, pixivNetPostRequest, pixivNetRequest} from "@/assets/js/request";
+import {checkCache} from "@/assets/js/CacheUtils";
 
 const prefix = '/'
 
 export default {
     namespaced: true,
-    state: {},
+    state: {
+        cache: {},
+    },
     mutations: {},
     actions: {
         follow: ({dispatch, commit, state}, {uid, token}) => {
@@ -42,12 +45,12 @@ export default {
         },
         bookmarkAdd: ({dispatch, commit, state}, {pid, token}) => {
             return pixivNetPostRequest({
-                url:'/ajax/illusts/bookmarks/add',
-                data:{
-                    illust_id:pid,
-                    restrict:0,
-                    comment:'',
-                    tags:[]
+                url: '/ajax/illusts/bookmarks/add',
+                data: {
+                    illust_id: pid,
+                    restrict: 0,
+                    comment: '',
+                    tags: []
                 },
                 headers: {
                     'x-csrf-token': token,
@@ -58,17 +61,35 @@ export default {
             return pixivNetPostFormDataRequest({
                 url: '/rpc/index.php',
                 data: {
-                    mode:'delete_illust_bookmark',
-                    bookmark_id:bookmarkId
+                    mode: 'delete_illust_bookmark',
+                    bookmark_id: bookmarkId
                 },
                 headers: {
                     'x-csrf-token': token,
                 }
             })
         },
+        getBookmark: ({dispatch, commit, state}, {uid, tag, rest = 'show', page = 1, size = 48}) => {
+            const offset = (page - 1) * size;
+            const limit = size;
+
+            return pixivNetRequest({
+                url: `/ajax/user/${uid}/illusts/bookmarks`,
+                params: {rest, offset, limit, tag, lang: 'zh'},
+            }).then(res => {
+                console.log(res)
+                res.works.forEach(i => i.url = i.url.replace("https://i.pximg.net", ""))
+                return res
+            })
+        },
+        findBookmark: ({dispatch, commit, state}, {uid, tag, rest = 'show', page = 1, size = 48}) => {
+            return checkCache(state.cache, `收藏的作品 ${uid} size:${size} page:${page} tag:${tag}`
+                , 60, () => dispatch("getBookmark", {uid, tag, rest, page, size}))
+        },
         method: ({dispatch, commit, state}, payload) => {
 
         },
+
     },
     getters: {},
 }

@@ -14,6 +14,7 @@ export default {
             },
             //是否过滤掉已收藏作品
             filterBookmarked: false,
+            uid:"",
         },
     },
     mutations: {

@@ -7,7 +7,7 @@
     >
       {{ data.tag }}
     </el-tag>
-    {{!data.translation?"":data.translation.en}}
+    <span style="color:white">{{ !data.translation ? "" : data.translation.en }}</span>
   </span>
 </template>
 

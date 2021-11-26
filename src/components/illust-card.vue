@@ -1,5 +1,5 @@
 <template>
-  <el-card v-if="data && data.hasOwnProperty('id')" :body-style="{ padding: '0px','background-color':`#000000` }">
+  <el-card v-if="data && data.hasOwnProperty('id')" :body-style="{ padding: '0px','background-color':`#1f1f1f` }">
     <div>
       <router-link :to="`/artwork/${data.id}`">
         <el-image
