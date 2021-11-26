@@ -3,11 +3,11 @@
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
     <el-header>
-      <el-button type="primary" @click="refresh(true)" size="mini">刷新</el-button>
-      过滤已收藏:
+      <el-button type="primary" @click="findPage(true)" size="mini">刷新</el-button>
+      <span style="color:white">过滤已收藏:</span>
       <el-switch
           v-model="filterBookmarked"
-          @change="(e)=>this.setConfig({key:'filterBookmarked',value:e})"
+          @change="switchFilterBookmarked"
           style="margin-left: 24px"
           inline-prompt
           active-icon="是"
@@ -23,7 +23,7 @@
       <div v-if="!loading">
         <el-row>
           <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
-                  v-for="item in !filterBookmarked?illust:illust.filter(i=>!i.bookmarkData)">
+                  v-for="item in illust">
             <illust-card :data="item"/>
           </el-col>
         </el-row>
@@ -60,7 +60,11 @@ export default {
     goPage(e) {
       this.$router.push(`/follow-latest/${e}`)
     },
-    refresh(force) {
+    switchFilterBookmarked(e) {
+      this.setConfig({key: 'filterBookmarked', value: e})
+      this.findPage(false)
+    },
+    findPage(force) {
       this.page = parseInt(this.$route.params.page);
       this.loading = true;
       const method = force ? this.getFollowLatest : this.findFollowLatest;
@@ -70,6 +74,9 @@ export default {
           item.url = this.config.imgDomain + item.url
           item.profileImageUrl = this.config.imgDomain + item.profileImageUrl
         })
+        if (this.filterBookmarked) {
+          this.illust = this.illust.filter(i => !i.bookmarkData)
+        }
         console.log(this.illust)
         this.loading = false;
       }).catch(reason => {
@@ -78,14 +85,14 @@ export default {
     }
   },
   mounted() {
-    this.refresh(false);
+    this.findPage(false);
     this.filterBookmarked = this.config.filterBookmarked;
   },
   watch: {
     "$route": {
       handler: function (e) {
         if (e.fullPath.startsWith("/follow-latest")) {
-          this.refresh(false);
+          this.findPage(false);
         }
       }
     }

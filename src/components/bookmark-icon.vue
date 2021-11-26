@@ -1,5 +1,5 @@
 <template>
-  <el-icon :size="size?size:defaultSize">
+  <el-icon :size="size?size:defaultSize" :color="color">
     <alarm-clock v-if="loading"/>
     <star-filled class="clickAble" v-else-if="bookmarkData &&bookmarkData.hasOwnProperty('id')" @click="click"/>
     <star class="clickAble" v-else @click="click"/>
@@ -14,6 +14,7 @@ export default {
   name: "bookmark-icon",
   data() {
     return {
+      color:'white',
       defaultSize: 30,
       loading: false,
       bookmarkData: {},
@@ -25,6 +26,7 @@ export default {
       this.loading = true;
       //取消收藏
       if (this.bookmarkData && this.bookmarkData.id) {
+        this.color ='white'
         this.bookmarkDel({
           bookmarkId: this.bookmarkData.id,
           token: this.token
@@ -34,8 +36,10 @@ export default {
           this.$message.success(`取消收藏成功 pid = ${this.pid}`)
           this.loading = false;
           this.bookmarkData = {}
+          this.color ='white'
         }).catch(res=>{
           this.$message.warn("请求超时请重试")
+          this.color ='red'
           this.loading = false;
         })
       } else {
@@ -48,20 +52,30 @@ export default {
           this.$message.success(`收藏成功 pid = ${this.pid}`)
           this.loading = false;
           this.bookmarkData = {id:res.last_bookmark_id}
+          this.color ='red'
         }).catch(res=>{
           this.$message.warn("请求超时请重试")
+          this.color ='white'
           this.loading = false;
         })
       }
     },
+    updateData(data){
+      this.bookmarkData = data?copyObj(data):{}
+      if (this.bookmarkData && this.bookmarkData.hasOwnProperty('id')){
+        this.color ="red"
+      }else{
+        this.color ='white'
+      }
+    },
   },
   mounted() {
-    this.bookmarkData = this.data?copyObj(this.data):{}
+    this.updateData(this.data)
   },
   watch: {
     "data": {
       handler: function (e) {
-        this.bookmarkData = e ? copyObj(e) : {}
+        this.updateData(e)
       }
     }
   },

@@ -1,5 +1,5 @@
 <template>
-  <el-card v-if="data && data.hasOwnProperty('id')" :body-style="{ padding: '0px' }">
+  <el-card v-if="data && data.hasOwnProperty('id')" :body-style="{ padding: '0px','background-color':`#000000` }">
     <div>
       <router-link :to="`/artwork/${data.id}`">
         <el-image
@@ -11,7 +11,7 @@
     </div>
     <div>
       <router-link :to="`/artwork/${data.id}`">
-        {{ data.title }}
+       <span style="color:white;"> {{ data.title }}</span>
       </router-link>
     </div>
     <div>
@@ -21,7 +21,7 @@
           <router-link :to="`/user/${data.userId}/illust/1`">
             <el-link type="primary"
                      v-if="!disableAvatar"
-                     style="font-size: 18px;"
+                     style="font-size: 18px;color:white;"
             >{{ data.userName.substring(0, Math.min(6, data.userName.length)) }}
             </el-link>
           </router-link>

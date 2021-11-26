@@ -3,10 +3,10 @@
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <el-button type="primary" @click="init(true)" size="mini">刷新</el-button>
-      过滤已收藏:
+      <span style="color:white">过滤已收藏:</span>
       <el-switch
           v-model="filterBookmarked"
-          @change="(e)=>this.setConfig({key:'filterBookmarked',value:e})"
+          @change="switchFilterBookmarked"
           style="margin-left: 24px"
           inline-prompt
           active-icon="是"
@@ -22,7 +22,7 @@
     <el-main v-loading="loading">
       <el-row>
         <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
-                v-for="item in !filterBookmarked?illust:illust.filter(i=>!i.bookmarkData)">
+                v-for="item in illust">
           <illust-card :data="item" disableAvatar/>
         </el-col>
       </el-row>
@@ -59,6 +59,10 @@ export default {
     goPage(e) {
       this.$router.push(`/user/${this.$route.params.userId}/${this.$route.params.type}/${e}`)
     },
+    switchFilterBookmarked(e){
+      this.setConfig({key:'filterBookmarked',value:e})
+      this.findPage(false)
+    },
     findPage(force) {
       const method = force?this.getProfileIllusts:this.findProfileIllusts;
       this.loading = true
@@ -71,6 +75,9 @@ export default {
         this.loading = false
         this.illust = copyObj(res)
         this.illust.forEach(i => i.url = this.config.imgDomain + i.url)
+        if (this.filterBookmarked){
+          this.illust = this.illust.filter(i=>!i.bookmarkData)
+        }
         console.log(res)
         return res;
       })
