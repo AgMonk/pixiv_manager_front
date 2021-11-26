@@ -22,7 +22,6 @@ export default {
   methods: {
     ...mapActions("pixivBookmark", [`bookmarkAdd`, `bookmarkDel`]),
     click() {
-      /*todo 发送请求 收藏作品 或 取消收藏 */
       this.loading = true;
       //取消收藏
       if (this.bookmarkData && this.bookmarkData.id) {

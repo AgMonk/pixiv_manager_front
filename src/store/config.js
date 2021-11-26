@@ -28,6 +28,7 @@ export default {
         loadConfig: (state) => {
             const cache = getCache("config");
             state.config = cache ? cache : state.config;
+            console.log("加载配置")
             console.log(state.config)
         }
     },
