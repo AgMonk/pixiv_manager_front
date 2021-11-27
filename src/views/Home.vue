@@ -17,10 +17,14 @@ export default {
     HelloWorld
   },
   methods:{
-    ...mapActions('pixivUserIllust',[`findProfileAll`,`findProfileIllusts`])
+    ...mapActions('pixivSearch',[`findSearch`])
   },
   mounted() {
-    console.log(getCookieMap())
+    this.findSearch({
+      keyword:'少女前线',
+    }).then(res=>{
+      console.log(res)
+    })
   }
 }
 </script>
