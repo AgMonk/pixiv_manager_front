@@ -7,6 +7,7 @@ import pixivUser from "@/store/pixivUser";
 import pixivBookmark from "@/store/pixivBookmark";
 import pixivFollowLatest from "@/store/pixivFollowLatest";
 import pixivUserIllust from "@/store/pixivUserIllust";
+import pixivTagTranslation from "@/store/pixivTagTranslation";
 
 export default createStore({
   state: {
@@ -16,7 +17,7 @@ export default createStore({
   actions: {
   },
   modules: {
-    tags,config,pixivIllust,pixivFollow,pixivUser,pixivBookmark,pixivFollowLatest,pixivUserIllust
+    tags,config,pixivIllust,pixivFollow,pixivUser,pixivBookmark,pixivFollowLatest,pixivUserIllust,pixivTagTranslation
   },
 
 })
