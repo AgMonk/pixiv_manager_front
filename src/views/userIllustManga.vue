@@ -52,6 +52,7 @@ import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import FollowButton from "@/components/follow-button";
 import UserAvatar from "@/components/user-avatar";
+import {addDomains} from "@/assets/js/pixivUtils";
 
 export default {
   name: "userIllustManga",
@@ -105,8 +106,10 @@ export default {
           const translation =this.getAllTranslations();
           this.loading = false
           this.illust = copyObj(res)
+
+          addDomains(this.illust,this.config.imgDomain)
+
           this.illust.forEach(i => {
-            i.url = this.config.imgDomain + i.url
             i.tagTranslation = i.tags.map(t=> {
               return {key: t, value:translation[t]}
             })
@@ -117,6 +120,8 @@ export default {
           }
           console.log(this.illust)
           return res;
+        }).catch(res => {
+          console.log(res)
         })
       } else if ('bookmark' === this.type) {
         const method = force ? this.getBookmark : this.findBookmark;
@@ -130,13 +135,15 @@ export default {
           this.total = res.total
           this.totalCount.bookmark = res.total
           this.illust = copyObj(res.works)
-          this.illust.forEach(i => i.url = this.config.imgDomain + i.url)
+          addDomains(this.illust,this.config.imgDomain)
+
           if (this.filterBookmarked && this.$route.params.userId !== this.config.uid) {
             this.illust = this.illust.filter(i => !i.bookmarkData)
           }
           console.log(this.illust)
         }).catch(res => {
           this.loading = false
+          console.log(res)
         })
       }
     },

@@ -55,7 +55,7 @@ export default {
 
                 Object.keys(res.works).reverse().forEach(key=>{
                     const value = res.works[key];
-                    replacePixivNetOne(values)
+                    replacePixivNetOne(value)
                     a.push(value)
                 })
                 return a;

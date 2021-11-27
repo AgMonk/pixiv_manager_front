@@ -39,6 +39,7 @@
 import {mapActions, mapMutations, mapState} from "vuex";
 import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
+import {addDomains} from "@/assets/js/pixivUtils";
 
 export default {
   name: "followLatest",
@@ -70,10 +71,9 @@ export default {
       const method = force ? this.getFollowLatest : this.findFollowLatest;
       method(this.page).then(res => {
         this.illust = copyObj(res);
-        this.illust.forEach(item => {
-          item.url = this.config.imgDomain + item.url
-          item.profileImageUrl = this.config.imgDomain + item.profileImageUrl
-        })
+
+        addDomains(this.illust,this.config.imgDomain)
+
         if (this.filterBookmarked) {
           this.illust = this.illust.filter(i => !i.bookmarkData)
         }
