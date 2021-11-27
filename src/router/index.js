@@ -41,6 +41,10 @@ const hiddenRoute = [
         path: '/user/:userId/:type/:page',
         component: () => import('../views/userIllustManga.vue')
     },
+    {
+        path: '/search/:keyword/:page',
+        component: () => import('../views/search.vue')
+    },
 
 ]
 

@@ -31,14 +31,15 @@ export default {
                     commit("pixivTagTranslation/setTranslation", {key, value}, {root: true});
                 })
 
-                const res = {title,data,total,popular,relatedTags}
-                console.log(res)
-                return res;
+                return {title, data, total, popular, relatedTags};
 
             })
         },
         findSearch: ({dispatch, commit, state}, {keyword, p = 1, mode = 'all'}) => {
-            return checkCache(state.cache, `搜索作品 keyword:${keyword} mode:${mode} page:${p}`
+            if (!state.cache.hasOwnProperty(keyword)) {
+                state.cache[keyword] = {}
+            }
+            return checkCache(state.cache[keyword], `搜索作品 keyword:${keyword} mode:${mode} page:${p}`
                 , 10 * 60, () => dispatch("getSearch", {keyword, p, mode}))
         },
         method: ({dispatch, commit, state}, payload) => {
