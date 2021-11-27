@@ -2,6 +2,7 @@
 import {pixivNetRequest} from "@/assets/js/request";
 import {checkCache} from "@/assets/js/CacheUtils";
 import {copyObj} from "@/assets/js/utils";
+import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 
 export default {
     namespaced: true,
@@ -39,9 +40,9 @@ export default {
 
                 //作品列表
                 const list = body.thumbnails.illust;
+                replacePixivNetArray(list)
+
                 list.forEach(item => {
-                    item.url = item.url.replace("https://i.pximg.net", "")
-                    item.profileImageUrl = item.profileImageUrl.replace("https://i.pximg.net", "")
                     item.tagTranslation = item.tags.map(t=> {
                         return {key: t, value:translation[t]}
                     })

@@ -1,6 +1,7 @@
 // pixiv用户的作品
 import {pixivNetRequest} from "@/assets/js/request";
 import {checkCache} from "@/assets/js/CacheUtils";
+import {replacePixivNet, replacePixivNetArray, replacePixivNetOne} from "@/assets/js/pixivUtils";
 
 export default {
     namespaced: true,
@@ -51,10 +52,10 @@ export default {
                 },
             ).then(res => {
                 const a = [];
+
                 Object.keys(res.works).reverse().forEach(key=>{
                     const value = res.works[key];
-                    value.url = value.url.replace("https://i.pximg.net","")
-                    value.profileImageUrl = value.profileImageUrl.replace("https://i.pximg.net","")
+                    replacePixivNetOne(values)
                     a.push(value)
                 })
                 return a;

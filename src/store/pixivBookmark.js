@@ -2,6 +2,7 @@
 
 import {pixivNetPostFormDataRequest, pixivNetPostRequest, pixivNetRequest} from "@/assets/js/request";
 import {checkCache} from "@/assets/js/CacheUtils";
+import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 
 const prefix = '/'
 
@@ -78,7 +79,7 @@ export default {
                 params: {rest, offset, limit, tag, lang: 'zh'},
             }).then(res => {
                 console.log(res)
-                res.works.forEach(i => i.url = i.url.replace("https://i.pximg.net", ""))
+                replacePixivNetArray(res.works)
                 return res
             })
         },
