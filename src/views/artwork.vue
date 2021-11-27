@@ -38,10 +38,7 @@
           <div>
             <el-descriptions border :column="1">
               <template #title>
-                <el-avatar :size="50" v-if="user && user.hasOwnProperty('image')" :src="config.imgDomain+user.image"/>
-                <router-link :to="`/user/${illust.userId}/illust/1`">
-                  <el-link type="primary" style="color:white">{{ illust.userName }}</el-link>
-                </router-link>
+                <user-avatar :user="user"/>
               </template>
               <template #extra>
                 <follow-button
@@ -118,10 +115,11 @@ import BookmarkIcon from "@/components/bookmark-icon";
 import FollowButton from "@/components/follow-button";
 import axios from "axios";
 import PixivTag from "@/components/pixiv-tag";
+import UserAvatar from "@/components/user-avatar";
 
 export default {
   name: "artwork",
-  components: {PixivTag, FollowButton, BookmarkIcon},
+  components: {UserAvatar, PixivTag, FollowButton, BookmarkIcon},
   data() {
     return {
       illust: {},
