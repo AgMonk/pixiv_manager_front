@@ -39,7 +39,9 @@
             <el-descriptions border :column="1">
               <template #title>
                 <el-avatar :size="50" v-if="user && user.hasOwnProperty('image')" :src="config.imgDomain+user.image"/>
-                <el-link type="primary" :href="`/user/${illust.userId}/illust/1`" target="_blank">{{ illust.userName }}</el-link>
+                <router-link :to="`/user/${illust.userId}/illust/1`">
+                  <el-link type="primary" style="color:white">{{ illust.userName }}</el-link>
+                </router-link>
               </template>
               <template #extra>
                 <follow-button
@@ -71,7 +73,7 @@
                         :pid="illust.id"
                         :data="illust.bookmarkData"
                     />
-                    <span style="font-size:25px;">{{ illust.bookmarkCount }}</span></div>
+                    <span style="font-size:25px;color:white">{{ illust.bookmarkCount }}</span></div>
                 </template>
                 <el-descriptions-item label="pid">{{ illust.id }}</el-descriptions-item>
                 <el-descriptions-item label="创建时间">{{ new Date(illust.createDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
@@ -183,9 +185,9 @@ export default {
         this.handleUrls()
         this.loading = false;
         this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
-      }).catch(() => {
+      }).catch(reason => {
         this.loading = false;
-
+        console.log(reason)
       })
     },
   },

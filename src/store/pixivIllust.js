@@ -32,9 +32,11 @@ export default {
                 //标签翻译
                 if (body.hasOwnProperty('tags') && body.tags.hasOwnProperty('tags')){
                     body.tags.tags.forEach(item=>{
-                        const key = item.tag;
-                        const value = item.translation.en;
-                        commit("pixivTagTranslation/setTranslation", {key, value}, {root: true});
+                        if (item.hasOwnProperty('translation')) {
+                            const key = item.tag;
+                            const value = item.translation.en;
+                            commit("pixivTagTranslation/setTranslation", {key, value}, {root: true});
+                        }
                     })
 
                 }
