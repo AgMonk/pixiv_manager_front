@@ -32,7 +32,7 @@
         </el-header>
 
         <el-main v-loading="loading">
-          <el-row>
+          <el-row v-if="!loading">
             <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
                     v-for="item in illust">
               <illust-card :data="item" disableAvatar/>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import {mapActions, mapMutations, mapState} from "vuex";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import FollowButton from "@/components/follow-button";
@@ -82,12 +82,15 @@ export default {
     ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`, `getProfileIllusts`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     ...mapActions("pixivBookmark", [`findBookmark`, `getBookmark`]),
+    ...mapGetters('pixivTagTranslation',[`getAllTranslations`]),
     goPage(e) {
       this.$router.push(`/user/${this.$route.params.userId}/${this.type}/${e}`)
     },
     switchFilterBookmarked(e) {
       this.setConfig({key: 'filterBookmarked', value: e})
-      this.findPage(false)
+      this.findPage(false).catch(res => {
+        this.loading = false
+      })
     },
     findPage(force) {
       this.loading = true
@@ -99,18 +102,25 @@ export default {
           size: this.size,
           work_category: this.$route.params.type
         }).then(res => {
+          const translation =this.getAllTranslations();
           this.loading = false
           this.illust = copyObj(res)
-          this.illust.forEach(i => i.url = this.config.imgDomain + i.url)
+          this.illust.forEach(i => {
+            i.url = this.config.imgDomain + i.url
+            i.tagTranslation = i.tags.map(t=> {
+              return {key: t, value:translation[t]}
+            })
+          })
+
           if (this.filterBookmarked) {
             this.illust = this.illust.filter(i => !i.bookmarkData)
           }
-          console.log(res)
+          console.log(this.illust)
           return res;
         })
       } else if ('bookmark' === this.type) {
         const method = force ? this.getBookmark : this.findBookmark;
-        return this.findBookmark({
+        return method({
           uid: this.$route.params.userId,
           tag: this.tag,
           page: this.page,
@@ -145,7 +155,9 @@ export default {
         if (['illust', 'manga'].includes(this.type)) {
           this.total = Object.keys(res[this.type]).length;
         }
-        this.findPage(force)
+        this.findPage(force).catch(res => {
+          this.loading = false
+        })
       })
 
       this.findUserInfo(this.$route.params.userId).then(res => {
