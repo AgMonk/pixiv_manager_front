@@ -1,28 +1,95 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <el-container direction="vertical">
+    <!--  <el-container direction="horizontal">-->
+    <el-header>
+    </el-header>
+
+    <el-main>
+      <el-form style="width:500px" label-width="100px">
+        <el-form-item>
+          <!--suppress HtmlUnknownAttribute -->
+          <template #label>
+            <span style="color:white">解析地址</span>
+          </template>
+          <el-input v-model="url" style="width:300px"/>
+          <el-button type="primary" @click="parseUrl(url)">解析</el-button>
+        </el-form-item>
+        <el-form-item>
+          <!--suppress HtmlUnknownAttribute -->
+          <template #label>
+            <span style="color:white">Pid</span>
+          </template>
+          <el-input v-model="pid" style="width:300px" type="number"/>
+          <el-button type="primary" @click="routeToIllust(pid)">跳转</el-button>
+        </el-form-item>
+        <el-form-item>
+          <!--suppress HtmlUnknownAttribute -->
+          <template #label>
+            <span style="color:white">Uid</span>
+          </template>
+          <el-input v-model="uid" style="width:300px" type="number"/>
+          <el-button type="primary" @click="routeToUser(uid)">跳转</el-button>
+        </el-form-item>
+
+
+      </el-form>
+
+    </el-main>
+    <el-footer></el-footer>
+  </el-container>
+
 </template>
 
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import {mapActions} from "vuex";
-import {getCookieMap} from "@/assets/js/cookieUtils";
 
 export default {
   name: 'Home',
   components: {
     HelloWorld
   },
-  methods:{
-    ...mapActions('pixivSearch',[`findSearch`])
+  data() {
+    return {
+      url: '',
+      pid: undefined,
+      uid: undefined,
+    }
+  },
+  methods: {
+    ...mapActions('pixivSearch', [`findSearch`]),
+
+    parseUrl(url) {
+      const pattern_artwork = /https:\/\/www\.pixiv\.net\/artworks\/(\d+)/g
+      const pattern_user = /https:\/\/www\.pixiv\.net\/users\/(\d+)$/g
+      const pattern_user_artwork = /https:\/\/www\.pixiv\.net\/users\/(\d+)\/artworks$/g
+
+      let g1 = pattern_artwork.exec(url);
+      if (g1) {
+        this.routeToIllust(g1[1])
+      }
+      let g2 = pattern_user.exec(url);
+      if (g2) {
+        this.routeToUser(g2[1])
+      }
+      let g3 = pattern_user_artwork.exec(url);
+      if (g3) {
+        this.routeToUser(g3[1])
+      }
+
+    },
+    routeToUser(uid) {
+      this.$router.push(`/user/${uid}/illust/1`);
+    },
+    routeToIllust(pid) {
+      this.$router.push(`/artwork/${pid}`);
+    }
   },
   mounted() {
     this.findSearch({
-      keyword:'少女前线',
-    }).then(res=>{
+      keyword: '少女前线',
+    }).then(res => {
       console.log(res)
     })
   }

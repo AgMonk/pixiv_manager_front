@@ -25,11 +25,16 @@ export default {
     return {
       routes,
       activeIndex:location.pathname,
+      url:"",
     }
   },
   computed: {
   },
   methods: {
+    handleClick(e){
+      console.log(e)
+    },
+
     select(index,indexPath){
      // if(!this.user){
      //   this.activeIndex = "/me"
