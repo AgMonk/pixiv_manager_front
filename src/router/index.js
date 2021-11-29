@@ -21,6 +21,11 @@ export const routes = [
         redirect: `/user/${getUid()}/bookmark/1`,
     },
     {
+        path: '/searchTabs',
+        name: '搜索',
+        component: () => import('../views/searchTabs.vue')
+    },
+    {
         path: '/follow-latest',
         name: '关注作品',
         redirect: '/follow-latest/1'
@@ -53,11 +58,6 @@ const hiddenRoute = [
         path: '/user/:userId/:type/:page',
         component: () => import('../views/userIllustManga.vue')
     },
-    {
-        path: '/search/:keyword/:page',
-        component: () => import('../views/search.vue')
-    },
-
 ]
 
 const router = createRouter({

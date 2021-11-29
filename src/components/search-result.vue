@@ -3,12 +3,16 @@
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
     <el-header>
+      <div style="text-align: left;color:white">
+        <span>搜索: {{ k }}</span>
+        <el-button type="primary" @click="findPage(true)" size="mini" style="margin-left: 25px">刷新</el-button>
+        <filter-bookmarked @change="findPage(false)"/>
+      </div>
       <el-pagination layout="total,prev, pager, next, jumper"
                      :total="total"
                      v-model:page-size="size"
                      @current-change="p=$event;findPage(false)"
                      v-model:current-page="p"/>
-      <el-button type="primary" @click="findPage(true)" size="mini">刷新</el-button>
 
     </el-header>
 
@@ -16,7 +20,7 @@
       <div v-if="!loading">
         <illust-cards v-if="result.data" :data="result.data"
                       @bookmark-add-success="bookmarkStatusChanged"
-                      @bookmark-del-success="bookmarkStatusChanged" />
+                      @bookmark-del-success="bookmarkStatusChanged"/>
 
       </div>
     </el-main>
@@ -30,18 +34,19 @@ import {mapActions, mapMutations, mapState} from "vuex";
 import IllustCards from "@/components/illust-cards";
 import {setTitle} from "@/assets/js/projectUtils";
 import {addDomains} from "@/assets/js/pixivUtils";
+import FilterBookmarked from "@/components/filter-bookmarked";
 
 export default {
   name: "search-result",
-  components: {IllustCards},
+  components: {FilterBookmarked, IllustCards},
   data() {
     return {
-      loading:false,
-      total:100,
-      p:1,
-      k:'',
-      size:60,
-      result:[],
+      loading: false,
+      total: 100,
+      p: 1,
+      k: '',
+      size: 60,
+      result: [],
     }
   },
   computed: {
@@ -52,8 +57,8 @@ export default {
     ...mapMutations(`pixivSearch`, [`delCache`]),
     bookmarkStatusChanged(e) {
       this.delCache({
-        keyword:this.k,
-        p:this.p,
+        keyword: this.k,
+        p: this.p,
       })
     },
     findPage(force) {
@@ -62,7 +67,7 @@ export default {
       const p = this.p;
       const keyword = this.k;
       const title = `搜索 ${keyword} 第 ${p} 页`;
-      this.$emit('search-changed',{keyword,p})
+      this.$emit('search-changed', {keyword, p})
       console.log(title)
       setTitle(title)
 
@@ -87,7 +92,7 @@ export default {
         this.loading = false;
       })
     },
-    init(){
+    init() {
       this.p = this.page;
       this.k = this.keyword;
       this.findPage(false)
@@ -97,12 +102,12 @@ export default {
     this.init();
   },
   watch: {
-    "keyword":{
+    "keyword": {
       handler: function (e) {
         this.init()
       }
     },
-    "page":{
+    "page": {
       handler: function (e) {
         this.init()
       }
@@ -116,8 +121,8 @@ export default {
     },
     page: {
       required: true,
-      type:Number,
-      default:1,
+      type: Number,
+      default: 1,
     }
   },
 }

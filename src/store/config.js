@@ -18,11 +18,14 @@ export default {
             uid:"",
             //保存搜索关键字
             keywords:[],
+            keyword:"",
         },
     },
     mutations: {
         setConfig: (state, {key, value}) => {
             state.config[key] = value;
+            console.log('更新配置: '+key)
+            console.log(value)
             putCache("config", state.config);
         },
         updateConfig: (state, payload) => {
