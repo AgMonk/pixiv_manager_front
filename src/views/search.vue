@@ -5,7 +5,6 @@
       <el-input v-model="keyword" style="width:300px" size="mini" @keypress.enter="goRouter(keyword,1)"/>
       <el-button type="primary" v-if="keyword!==$route.params.keyword" @click="goRouter(keyword,1)" size="mini">搜索</el-button>
       <el-button type="primary" v-if="keyword===$route.params.keyword" @click="findPage(true)" size="mini">刷新</el-button>
-
       <!--     保存搜索、选择已保存的搜索-->
       <el-dropdown split-button type="primary" @click="saveKeyword" @command="goRouter($event,1)" size="mini">
         <template #default>
@@ -29,15 +28,9 @@
     </el-header>
     <el-main v-loading="loading">
       <div v-if="!loading">
-        <el-row>
-          <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
-                  v-for="item in result.data">
-            <illust-card :data="item"
-                         @bookmark-add-success="bookmarkStatusChanged"
-                         @bookmark-del-success="bookmarkStatusChanged"
-            />
-          </el-col>
-        </el-row>
+        <illust-cards v-if="result.data" :data="result.data"
+                      @bookmark-add-success="bookmarkStatusChanged"
+                      @bookmark-del-success="bookmarkStatusChanged" />
 
       </div>
     </el-main>
@@ -52,10 +45,11 @@ import {addDomains} from "@/assets/js/pixivUtils";
 import IllustCard from "@/components/illust-card";
 import FilterBookmarked from "@/components/filter-bookmarked";
 import {copyObj} from "@/assets/js/utils";
+import IllustCards from "@/components/illust-cards";
 
 export default {
   name: "search",
-  components: {FilterBookmarked, IllustCard},
+  components: {IllustCards, FilterBookmarked, IllustCard},
   data() {
     return {
       page: 1,

@@ -13,16 +13,9 @@
     </el-header>
     <el-main v-loading="loading">
       <div v-if="!loading">
-        <el-row>
-          <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
-                  v-for="item in illust">
-            <illust-card :data="item"
-                         @bookmark-add-success="delCache(page)"
-                         @bookmark-del-success="delCache(page)"
-            />
-          </el-col>
-        </el-row>
-
+        <illust-cards v-if="illust" :data="illust"
+                      @bookmark-add-success="delCache(page)"
+                      @bookmark-del-success="delCache(page)" />
       </div>
     </el-main>
     <el-footer></el-footer>
@@ -37,10 +30,11 @@ import {copyObj} from "@/assets/js/utils";
 import {addDomains} from "@/assets/js/pixivUtils";
 import {setTitle} from "@/assets/js/projectUtils";
 import FilterBookmarked from "@/components/filter-bookmarked";
+import IllustCards from "@/components/illust-cards";
 
 export default {
   name: "followLatest",
-  components: {FilterBookmarked, IllustCard},
+  components: {IllustCards, FilterBookmarked, IllustCard},
   data() {
     return {
       page: 1,

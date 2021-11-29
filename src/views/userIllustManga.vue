@@ -24,15 +24,9 @@
         </el-header>
 
         <el-main v-loading="loading">
-          <el-row v-if="!loading">
-            <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
-                    v-for="item in illust">
-              <illust-card :data="item" disableAvatar
-                           @bookmark-add-success="bookmarkStatusChanged"
-                           @bookmark-del-success="bookmarkStatusChanged"
-              />
-            </el-col>
-          </el-row>
+          <illust-cards v-if="illust" :data="illust"
+                        @bookmark-add-success="bookmarkStatusChanged"
+                        @bookmark-del-success="bookmarkStatusChanged" />
         </el-main>
         <el-footer></el-footer>
       </el-container>
@@ -50,10 +44,11 @@ import UserAvatar from "@/components/user-avatar";
 import {addDomains} from "@/assets/js/pixivUtils";
 import {setTitle} from "@/assets/js/projectUtils";
 import FilterBookmarked from "@/components/filter-bookmarked";
+import IllustCards from "@/components/illust-cards";
 
 export default {
   name: "userIllustManga",
-  components: {FilterBookmarked, UserAvatar, FollowButton, IllustCard},
+  components: {IllustCards, FilterBookmarked, UserAvatar, FollowButton, IllustCard},
   data() {
     return {
       loading: false,
