@@ -3,6 +3,7 @@
       class="item"
       effect="light"
       placement="bottom"
+      :show-after="500"
       :auto-close="2000"
   >
     <!--suppress HtmlUnknownAttribute -->
