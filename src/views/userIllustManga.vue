@@ -15,15 +15,7 @@
         <!--  <el-container direction="horizontal">-->
         <el-header>
           <el-button type="primary" @click="init(true)" size="mini">刷新</el-button>
-          <span style="color:white">过滤已收藏:</span>
-          <el-switch
-              v-model="filterBookmarked"
-              @change="switchFilterBookmarked"
-              style="margin-left: 24px"
-              inline-prompt
-              active-icon="是"
-              inactive-icon="否"
-          />
+          <filter-bookmarked @change="findPage(false)" />
           <el-pagination layout="total,prev, pager, next, jumper"
                          :total="total"
                          v-model:page-size="size"
@@ -54,14 +46,14 @@ import FollowButton from "@/components/follow-button";
 import UserAvatar from "@/components/user-avatar";
 import {addDomains} from "@/assets/js/pixivUtils";
 import {setTitle} from "@/assets/js/projectUtils";
+import FilterBookmarked from "@/components/filter-bookmarked";
 
 export default {
   name: "userIllustManga",
-  components: {UserAvatar, FollowButton, IllustCard},
+  components: {FilterBookmarked, UserAvatar, FollowButton, IllustCard},
   data() {
     return {
       loading: false,
-      filterBookmarked: false,
       page: 1,
       size: 48,
       total: 100,
@@ -80,19 +72,12 @@ export default {
     ...mapState(`config`, [`config`])
   },
   methods: {
-    ...mapMutations(`config`, [`setConfig`]),
     ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`, `getProfileIllusts`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     ...mapActions("pixivBookmark", [`findBookmark`, `getBookmark`]),
     ...mapGetters('pixivTagTranslation',[`getAllTranslations`]),
     goPage(e) {
       this.$router.push(`/user/${this.$route.params.userId}/${this.type}/${e}`)
-    },
-    switchFilterBookmarked(e) {
-      this.setConfig({key: 'filterBookmarked', value: e})
-      this.findPage(false).catch(res => {
-        this.loading = false
-      })
     },
     findPage(force) {
       this.loading = true
@@ -116,7 +101,7 @@ export default {
             })
           })
 
-          if (this.filterBookmarked) {
+          if (this.config.filterBookmarked) {
             this.illust = this.illust.filter(i => !i.bookmarkData)
           }
           console.log(this.illust)
@@ -187,7 +172,6 @@ export default {
   mounted() {
 
 
-    this.filterBookmarked = this.config.filterBookmarked;
     this.init();
   },
   watch: {

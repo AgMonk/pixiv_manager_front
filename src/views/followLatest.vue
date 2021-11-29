@@ -4,15 +4,7 @@
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <el-button type="primary" @click="findPage(true)" size="mini">刷新</el-button>
-      <span style="color:white">过滤已收藏:</span>
-      <el-switch
-          v-model="filterBookmarked"
-          @change="switchFilterBookmarked"
-          style="margin-left: 24px"
-          inline-prompt
-          active-icon="是"
-          inactive-icon="否"
-      />
+      <filter-bookmarked @change="findPage(false)" />
       <el-pagination layout="prev, pager, next, jumper"
                      :page-count="65535"
                      :pager-count="9"
@@ -41,10 +33,11 @@ import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import {addDomains} from "@/assets/js/pixivUtils";
 import {setTitle} from "@/assets/js/projectUtils";
+import FilterBookmarked from "@/components/filter-bookmarked";
 
 export default {
   name: "followLatest",
-  components: {IllustCard},
+  components: {FilterBookmarked, IllustCard},
   data() {
     return {
       page: 1,
@@ -58,13 +51,8 @@ export default {
   },
   methods: {
     ...mapActions('pixivFollowLatest', [`findFollowLatest`, `getFollowLatest`]),
-    ...mapMutations(`config`, [`setConfig`]),
     goPage(e) {
       this.$router.push(`/follow-latest/${e}`)
-    },
-    switchFilterBookmarked(e) {
-      this.setConfig({key: 'filterBookmarked', value: e})
-      this.findPage(false)
     },
     findPage(force) {
       this.page = parseInt(this.$route.params.page);
@@ -75,7 +63,7 @@ export default {
 
         addDomains(this.illust,this.config.imgDomain)
 
-        if (this.filterBookmarked) {
+        if (this.config.filterBookmarked) {
           this.illust = this.illust.filter(i => !i.bookmarkData)
         }
         console.log(this.illust)
@@ -89,7 +77,6 @@ export default {
     setTitle('我的关注作品')
 
     this.findPage(false);
-    this.filterBookmarked = this.config.filterBookmarked;
   },
   watch: {
     "$route": {
