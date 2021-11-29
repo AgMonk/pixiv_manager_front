@@ -11,7 +11,7 @@ export const checkCache = (cacheObj,key,expires,requestMethod) =>{
     const time = Math.floor(new Date().getTime() / 1000 )
     if (cacheObj.hasOwnProperty(key) &&  time-cacheObj[key].time<expires){
         console.log("从缓存读取数据 "+key)
-        return new Promise((r) => r(cacheObj[key].body))
+        return new Promise((r) => r(JSON.parse(JSON.stringify(cacheObj[key].body))))
     }
     return requestMethod().then(body=>{
         console.log("数据写入缓存 "+key)

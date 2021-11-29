@@ -9,7 +9,7 @@
         <el-form-item>
           <!--suppress HtmlUnknownAttribute -->
           <template #label>
-            <span style="color:white">解析地址</span>
+            <span class="label">解析地址</span>
           </template>
           <el-input v-model="url" style="width:300px"/>
           <el-button type="primary" @click="parseUrl(url)">解析</el-button>
@@ -17,7 +17,15 @@
         <el-form-item>
           <!--suppress HtmlUnknownAttribute -->
           <template #label>
-            <span style="color:white">Pid</span>
+            <span class="label">搜索</span>
+          </template>
+          <el-input v-model="keyword" style="width:300px"/>
+          <el-button type="primary" @click="routeToSearch(keyword)">搜索</el-button>
+        </el-form-item>
+         <el-form-item>
+          <!--suppress HtmlUnknownAttribute -->
+          <template #label>
+            <span class="label">Pid</span>
           </template>
           <el-input v-model="pid" style="width:300px" type="number"/>
           <el-button type="primary" @click="routeToIllust(pid)">跳转</el-button>
@@ -25,7 +33,7 @@
         <el-form-item>
           <!--suppress HtmlUnknownAttribute -->
           <template #label>
-            <span style="color:white">Uid</span>
+            <span class="label">Uid</span>
           </template>
           <el-input v-model="uid" style="width:300px" type="number"/>
           <el-button type="primary" @click="routeToUser(uid)">跳转</el-button>
@@ -56,11 +64,10 @@ export default {
       url: '',
       pid: undefined,
       uid: undefined,
+      keyword:``,
     }
   },
   methods: {
-    ...mapActions('pixivSearch', [`findSearch`]),
-
     parseUrl(url) {
       const pattern_artwork = /https:\/\/www\.pixiv\.net\/artworks\/(\d+)/g
       const pattern_user = /https:\/\/www\.pixiv\.net\/users\/(\d+)$/g
@@ -85,16 +92,21 @@ export default {
     },
     routeToIllust(pid) {
       this.$router.push(`/artwork/${pid}`);
-    }
+    },
+    routeToSearch(keyword) {
+      this.$router.push(`/search/${keyword}/1`);
+    },
+
   },
   mounted() {
     setTitle('首页')
 
-    this.findSearch({
-      keyword: '少女前线',
-    }).then(res => {
-      console.log(res)
-    })
+
   }
 }
 </script>
+<style scoped>
+.label{
+  color:white;
+}
+</style>
