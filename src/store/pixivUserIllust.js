@@ -1,7 +1,11 @@
 // pixiv用户的作品
 import {pixivNetRequest} from "@/assets/js/request";
 import {checkCache} from "@/assets/js/CacheUtils";
-import {replacePixivNet, replacePixivNetArray, replacePixivNetOne} from "@/assets/js/pixivUtils";
+import {replacePixivNetOne} from "@/assets/js/pixivUtils";
+
+function getKey({uid, work_category, size, page}) {
+    return `作者作品 ${uid} type:${work_category} size:${size} page:${page}`;
+}
 
 export default {
     namespaced: true,
@@ -9,7 +13,13 @@ export default {
         all: {},
         illusts: {},
     },
-    mutations: {},
+    mutations: {
+        delCache: (state, {uid, work_category, size, page}) => {
+            const key = getKey({uid, work_category, size, page});
+            console.log(`移除缓存 ${key}`)
+            delete state.illusts[key]
+        },
+    },
     actions: {
         //获取作者所有作品id
         getProfileAll: ({dispatch, commit, state}, uid) => {
@@ -67,7 +77,7 @@ export default {
                 throw "还未获取id列表"
             }
             //缓存key
-            const key = `${uid} type:${work_category} size:${size} page:${page}`;
+            const key = getKey({uid, work_category, size, page});
             return checkCache(state.illusts, key, 60 * 60, () => dispatch("getProfileIllusts"
                 , {uid, page, size, work_category, lang }))
         },

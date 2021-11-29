@@ -6,12 +6,21 @@ import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 
 const prefix = '/'
 
+const getKey = ({uid, tag, rest = 'show', page, size}) => {
+    return `收藏的作品 ${uid} size:${size} page:${page} tag:${tag}`
+}
+
 export default {
     namespaced: true,
     state: {
         cache: {},
     },
-    mutations: {},
+    mutations: {
+        delCache: (state,{uid, tag, rest = 'show', page, size}) => {
+            console.log(`移除缓存 ${getKey({uid, tag, rest, page, size})}`)
+            delete state.cache[getKey({uid, tag, rest, page, size})]
+        },
+    },
     actions: {
         follow: ({dispatch, commit, state}, {uid, token}) => {
             const formData = {
@@ -84,7 +93,7 @@ export default {
             })
         },
         findBookmark: ({dispatch, commit, state}, {uid, tag, rest = 'show', page = 1, size = 48}) => {
-            return checkCache(state.cache, `收藏的作品 ${uid} size:${size} page:${page} tag:${tag}`
+            return checkCache(state.cache, getKey({uid, tag, rest, page, size})
                 , 60, () => dispatch("getBookmark", {uid, tag, rest, page, size}))
         },
         method: ({dispatch, commit, state}, payload) => {

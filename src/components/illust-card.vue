@@ -3,7 +3,7 @@
       class="item"
       effect="light"
       placement="bottom"
-      :show-after="500"
+      :show-after="1000"
       :auto-close="2000"
   >
     <!--suppress HtmlUnknownAttribute -->
@@ -49,7 +49,10 @@
             />
           </el-col>
           <el-col style="text-align: right;color:white" :span="6">
-            <bookmark-icon :pid="data.id" :token="config.token" :data="data.bookmarkData"/>
+            <bookmark-icon :pid="data.id" :token="config.token" :data="data.bookmarkData"
+                           @bookmark-add-success="bookmarkStatusChanged('bookmark-add-success',$event)"
+                           @bookmark-del-success="bookmarkStatusChanged('bookmark-del-success',$event)"
+            />
             ({{ data.pageCount }})
           </el-col>
         </el-row>
@@ -70,11 +73,15 @@ export default {
   data() {
     return {}
   },
+  emits: ['bookmark-add-success','bookmark-del-success'],
   computed: {
     ...mapState(`config`, [`config`])
   },
   methods: {
     ...mapGetters('pixivTagTranslation', [`getAllTranslations`]),
+    bookmarkStatusChanged(name, e) {
+      this.$emit(name, e)
+    },
   },
   mounted() {
     //尝试翻译标签

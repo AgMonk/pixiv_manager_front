@@ -1,5 +1,5 @@
 <template>
- <span>
+ <span style="margin-left: 25px">
    <span style="color:white">过滤已收藏:</span>
       <el-switch
           v-model="filterBookmarked"

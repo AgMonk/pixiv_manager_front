@@ -18,5 +18,4 @@ export const checkCache = (cacheObj,key,expires,requestMethod) =>{
         cacheObj[key] = {body,time}
         return JSON.parse(JSON.stringify(body));
     })
-
 }

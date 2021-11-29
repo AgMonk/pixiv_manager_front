@@ -20,6 +20,7 @@ export default {
       bookmarkData: {},
     }
   },
+  emits: ['bookmark-add-success','bookmark-del-success'],
   computed: {
     ...mapState(`config`, [`config`])
   },
@@ -35,7 +36,7 @@ export default {
           token: this.config.token
         }).then(res => {
           console.log(res)
-          this.$emit("bookmark-del-success")
+          this.$emit("bookmark-del-success",this.pid)
           this.$message.success(`取消收藏成功 pid = ${this.pid}`)
           this.loading = false;
           this.bookmarkData = {}
@@ -51,13 +52,13 @@ export default {
           pid: this.pid,
           token: this.config.token
         }).then(res => {
-          this.$emit("bookmark-add-success")
+          this.$emit("bookmark-add-success",this.pid)
           this.$message.success(`收藏成功 pid = ${this.pid}`)
           this.loading = false;
           this.bookmarkData = {id:res.last_bookmark_id}
           this.color ='red'
         }).catch(res=>{
-          this.$message.warn("请求超时请重试")
+          this.$message.err("请求超时请重试")
           this.color ='white'
           this.loading = false;
         })

@@ -15,7 +15,7 @@
         <!--  <el-container direction="horizontal">-->
         <el-header>
           <el-button type="primary" @click="init(true)" size="mini">刷新</el-button>
-          <filter-bookmarked @change="findPage(false)" />
+          <filter-bookmarked @change="findPage(false)"/>
           <el-pagination layout="total,prev, pager, next, jumper"
                          :total="total"
                          v-model:page-size="size"
@@ -27,7 +27,10 @@
           <el-row v-if="!loading">
             <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
                     v-for="item in illust">
-              <illust-card :data="item" disableAvatar/>
+              <illust-card :data="item" disableAvatar
+                           @bookmark-add-success="bookmarkStatusChanged"
+                           @bookmark-del-success="bookmarkStatusChanged"
+              />
             </el-col>
           </el-row>
         </el-main>
@@ -39,7 +42,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
+import {mapActions, mapMutations, mapState} from "vuex";
 import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import FollowButton from "@/components/follow-button";
@@ -75,6 +78,30 @@ export default {
     ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`, `getProfileIllusts`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     ...mapActions("pixivBookmark", [`findBookmark`, `getBookmark`]),
+    ...mapMutations(`pixivBookmark`, {
+      'delBookmarkCache': 'delCache',
+    }),
+    ...mapMutations(`pixivUserIllust`, {
+      'delUserIllustCache': 'delCache',
+    }),
+    bookmarkStatusChanged(e) {
+      console.log(e)
+      if (this.type === 'bookmark') {
+        this.delBookmarkCache({
+          uid: this.user.userId,
+          tag: this.tag,
+          page: this.page,
+          size: this.size,
+        })
+      } else {
+        this.delUserIllustCache({
+          uid: this.user.userId,
+          work_category: this.type,
+          page: this.page,
+          size: this.size,
+        })
+      }
+    },
     goPage(e) {
       this.$router.push(`/user/${this.$route.params.userId}/${this.type}/${e}`)
     },
@@ -91,7 +118,7 @@ export default {
           this.loading = false
           this.illust = copyObj(res)
 
-          addDomains(this.illust,this.config.imgDomain)
+          addDomains(this.illust, this.config.imgDomain)
 
 
           if (this.config.filterBookmarked) {
@@ -114,7 +141,7 @@ export default {
           this.total = res.total
           this.totalCount.bookmark = res.total
           this.illust = copyObj(res.works)
-          addDomains(this.illust,this.config.imgDomain)
+          addDomains(this.illust, this.config.imgDomain)
 
           if (this.filterBookmarked && this.$route.params.userId !== this.config.uid) {
             this.illust = this.illust.filter(i => !i.bookmarkData)
@@ -152,11 +179,17 @@ export default {
         this.user.imageBig = this.config.imgDomain + this.user.imageBig
         console.log(this.user)
 
-        let type ;
+        let type;
         switch (this.$route.params.type) {
-          case 'illust':type='插画';break;
-          case 'manga':type='漫画';break;
-          case 'bookmark':type='收藏';break;
+          case 'illust':
+            type = '插画';
+            break;
+          case 'manga':
+            type = '漫画';
+            break;
+          case 'bookmark':
+            type = '收藏';
+            break;
         }
         setTitle(`${this.user.name}的${type}`)
       })

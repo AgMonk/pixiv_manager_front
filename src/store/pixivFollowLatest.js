@@ -4,12 +4,22 @@ import {checkCache} from "@/assets/js/CacheUtils";
 import {copyObj} from "@/assets/js/utils";
 import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 
+const getKey = (page) =>{
+    return `关注的作品 第 ${page} 页`
+}
+
 export default {
     namespaced: true,
     state: {
         cache: {},
     },
-    mutations: {},
+    mutations: {
+        delCache: (state, page) => {
+            const key = getKey(page);
+            console.log(`移除缓存 ${key}`)
+            delete state.cache[key]
+        },
+    },
     actions: {
         getFollowLatest: ({dispatch, commit, state}, p) => {
             return pixivNetRequest({
@@ -53,7 +63,7 @@ export default {
             })
         },
         findFollowLatest: ({dispatch, commit, state}, p) => {
-            return checkCache(state.cache, p + "", 60, () => dispatch("getFollowLatest", p))
+            return checkCache(state.cache, getKey(p), 60, () => dispatch("getFollowLatest", p))
         },
         method: ({dispatch, commit, state}, payload) => {
 

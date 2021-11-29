@@ -16,7 +16,10 @@
         <el-row>
           <el-col :xs="12" :sm="8" :md="6" :lg="4" :xl="3"
                   v-for="item in illust">
-            <illust-card :data="item"/>
+            <illust-card :data="item"
+                         @bookmark-add-success="delCache(page)"
+                         @bookmark-del-success="delCache(page)"
+            />
           </el-col>
         </el-row>
 
@@ -51,6 +54,7 @@ export default {
   },
   methods: {
     ...mapActions('pixivFollowLatest', [`findFollowLatest`, `getFollowLatest`]),
+    ...mapMutations(`pixivFollowLatest`,[`delCache`] ),
     goPage(e) {
       this.$router.push(`/follow-latest/${e}`)
     },
