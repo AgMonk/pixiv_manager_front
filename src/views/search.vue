@@ -2,12 +2,13 @@
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
     <el-header>
-      <el-button type="primary" @click="findPage(true)" size="mini">刷新</el-button>
-      <filter-bookmarked @change="findPage(false)" />
+      <el-input v-model="keyword" style="width:300px" size="mini" @keypress.enter="goRouter(keyword,1)"/>
+      <el-button type="primary" @click="goRouter(keyword,1)" size="mini">搜索</el-button>
+      <filter-bookmarked @change="findPage(false)"/>
       <el-pagination layout="total,prev, pager, next, jumper"
                      :total="total"
                      v-model:page-size="size"
-                     @current-change="goPage"
+                     @current-change="goRouter(keyword,$event)"
                      v-model:current-page="page"/>
     </el-header>
     <el-main v-loading="loading">
@@ -37,39 +38,39 @@ export default {
   components: {FilterBookmarked, IllustCard},
   data() {
     return {
-      page:1,
-      size:60,
-      total:100,
-      loading:false,
-      filterBookmarked:false,
-      result:{},
+      page: 1,
+      size: 60,
+      total: 100,
+      loading: false,
+      keyword: '',
+      filterBookmarked: false,
+      result: {},
     }
   },
   computed: {
     ...mapState(`config`, [`config`])
   },
   methods: {
-    ...mapActions('pixivSearch', [`findSearch`,`getSearch`]),
-    goPage(e) {
-      const keyword = this.$route.params.keyword;
-      this.$router.push(`/search/${keyword}/${e}`)
+    ...mapActions('pixivSearch', [`findSearch`, `getSearch`]),
+    goRouter(keyword,page){
+      this.$router.push(`/search/${keyword}/${page}`)
+      this.findPage(false)
     },
-    findPage(force){
-      const method = force ? this.getSearch:this.findSearch;
-      const p = this.$route.params.page;
-      const keyword = this.$route.params.keyword;
-      const title = `搜索 关键字: ${keyword} 第 ${p} 页`;
-      console.log(title)
-      setTitle(title)
+    findPage(force) {
+      this.loading = true
+      const method = force ? this.getSearch : this.findSearch;
+      const p = this.page;
+      const keyword = this.keyword;
+      const title = `搜索 ${keyword} 第 ${p} 页`;
 
-      return method({keyword,p}).then(res=>{
+      return method({keyword, p}).then(res => {
         const domain = this.config.imgDomain;
-        addDomains(res.data,domain)
-        addDomains(res.popular.recent,domain)
-        addDomains(res.popular.permanent,domain)
+        addDomains(res.data, domain)
+        addDomains(res.popular.recent, domain)
+        addDomains(res.popular.permanent, domain)
 
         this.total = res.total;
-        if (this.config.filterBookmarked){
+        if (this.config.filterBookmarked) {
           res.data = res.data.filter(i => !i.bookmarkData)
           res.popular.recent = res.popular.recent.filter(i => !i.bookmarkData)
           res.popular.permanent = res.popular.permanent.filter(i => !i.bookmarkData)
@@ -77,13 +78,20 @@ export default {
 
         console.log(res)
         this.result = res;
+        this.loading = false
+      }).catch(res => {
+        console.log(res)
+        this.loading = false;
       })
     },
   },
   mounted() {
-    this.findPage(false)
-
     this.filterBookmarked = this.config.filterBookmarked;
+    this.keyword = this.$route.params.keyword;
+    // noinspection JSCheckFunctionSignatures
+    this.page = parseInt(this.$route.params.page);
+
+    this.findPage(false)
 
   },
   watch: {},
