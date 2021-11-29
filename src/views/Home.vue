@@ -11,16 +11,8 @@
           <template #label>
             <span class="label">解析地址</span>
           </template>
-          <el-input v-model="url" style="width:300px"/>
+          <el-input placeholder="可解析官网的用户、图片地址" v-model="url" style="width:300px"/>
           <el-button type="primary" @click="parseUrl(url)">解析</el-button>
-        </el-form-item>
-        <el-form-item>
-          <!--suppress HtmlUnknownAttribute -->
-          <template #label>
-            <span class="label">搜索</span>
-          </template>
-          <el-input v-model="keyword" style="width:300px"/>
-          <el-button type="primary" @click="routeToSearch(keyword)">搜索</el-button>
         </el-form-item>
          <el-form-item>
           <!--suppress HtmlUnknownAttribute -->

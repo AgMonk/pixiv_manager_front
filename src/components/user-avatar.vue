@@ -17,7 +17,7 @@
       </span>
    <!--      关注按钮-->
       <follow-button
-          v-if="user && user.hasOwnProperty('isFollowed')"
+          v-if="user && user.hasOwnProperty('isFollowed') && user.userId!==config.uid"
           style="margin-left: 20px"
           :size="followButtonSize"
           :uid="user.userId"
@@ -32,6 +32,7 @@
 
 <script>
 import FollowButton from "@/components/follow-button";
+import {mapState} from "vuex";
 
 export default {
   name: "user-avatar",
@@ -40,6 +41,9 @@ export default {
     return {
       defaultValue: {}
     }
+  },
+  computed: {
+    ...mapState(`config`, [`config`])
   },
   methods: {},
   mounted() {
