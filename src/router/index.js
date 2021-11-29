@@ -1,12 +1,24 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
 import tags from "@/views/tags";
+import {getCache} from "@/assets/js/storageUtils";
+
+
+const getUid = ()=>{
+    const config = getCache('config');
+    return config.uid;
+}
 
 export const routes = [
     {
         path: '/',
         name: 'Home',
         component: Home
+    },
+    {
+        path: '/myBookmark',
+        name: '我的收藏',
+        redirect: `/user/${getUid()}/bookmark/1`,
     },
     {
         path: '/follow-latest',
@@ -55,5 +67,6 @@ const router = createRouter({
         ...hiddenRoute,
     ]
 })
+
 
 export default router
