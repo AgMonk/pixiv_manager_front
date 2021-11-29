@@ -5,6 +5,7 @@
     <el-header>
       <div style="text-align: left;color:white">
         <span>搜索: {{ k }}</span>
+        <el-button type="primary" @click="editKeyword" size="mini" style="margin-left: 25px">修改</el-button>
         <el-button type="primary" @click="findPage(true)" size="mini" style="margin-left: 25px">刷新</el-button>
         <filter-bookmarked @change="findPage(false)"/>
       </div>
@@ -35,6 +36,7 @@ import IllustCards from "@/components/illust-cards";
 import {setTitle} from "@/assets/js/projectUtils";
 import {addDomains} from "@/assets/js/pixivUtils";
 import FilterBookmarked from "@/components/filter-bookmarked";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 export default {
   name: "search-result",
@@ -61,13 +63,25 @@ export default {
         p: this.p,
       })
     },
+    editKeyword() {
+      ElMessageBox.prompt('修改搜索关键字', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        inputValue: this.k,
+      }).then(({value}) => {
+        ElMessage.success('修改成功');
+        this.$emit("keyword-changed", {before: this.k, after: value})
+      }).catch(() => {
+        ElMessage.info('已取消');
+      })
+    },
     findPage(force) {
       this.loading = true
       const method = force ? this.getSearch : this.findSearch;
       const p = this.p;
       const keyword = this.k;
       const title = `搜索 ${keyword} 第 ${p} 页`;
-      this.$emit('search-changed', {keyword, p})
+      this.$emit('page-changed', {keyword, p})
       console.log(title)
       setTitle(title)
 
@@ -97,34 +111,48 @@ export default {
       this.k = this.keyword;
       this.findPage(false)
     },
-  },
+  }
+  ,
   mounted() {
     this.init();
-  },
+  }
+  ,
   watch: {
-    "keyword": {
-      handler: function (e) {
-        this.init()
-      }
-    },
-    "page": {
-      handler: function (e) {
-        this.init()
-      }
-    },
+    "keyword":
+        {
+          handler: function (e) {
+            this.init()
+          }
+        }
+    ,
+    "page":
+        {
+          handler: function (e) {
+            this.init()
+          }
+        }
+    ,
 
-  },
+  }
+  ,
   props: {
     keyword: {
       required: true,
-      type: String,
-    },
-    page: {
-      required: true,
-      type: Number,
-      default: 1,
-    }
-  },
+      type
+:
+String,
+}
+,
+page: {
+  required: true,
+      type
+:
+  Number,
+default:
+  1,
+}
+}
+,
 }
 
 </script>

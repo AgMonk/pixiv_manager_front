@@ -23,7 +23,7 @@
               <span v-else>{{ item }}</span>
             </span>
           </template>
-          <search-result v-if="item===currentTab" :keyword="item" :page="1"/>
+          <search-result v-if="item===currentTab" :keyword="item" :page="1" @keyword-changed="keywordChanged"/>
         </el-tab-pane>
       </el-tabs>
     </el-main>
@@ -51,6 +51,11 @@ export default {
   },
   methods: {
     ...mapMutations(`config`, [`setConfig`]),
+    keywordChanged(e){
+      this.keywords = this.keywords.filter(i => i !== e.before);
+      this.keywords.push(e.after)
+      this.currentTab = e.after;
+    },
     tabEdit(name, action) {
       if (action === 'remove') {
         this.$confirm(`确定移除搜索 ${name} ?`, '提示', {
@@ -59,6 +64,9 @@ export default {
           type: 'warning'
         }).then(() => {
           this.keywords = this.keywords.filter(i => i !== name);
+          if (this.currentTab===name){
+            this.currentTab = this.keywords[0]
+          }
         }).catch(() => {
           this.$message({
             type: 'info',
