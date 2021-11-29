@@ -10,11 +10,11 @@
     <template #content>
       <!--      鼠标提示内容 -->
       <el-descriptions label="作品简介" border :column="1">
-        <el-descriptions-item label="pid">{{data.id}}</el-descriptions-item>
+        <el-descriptions-item label="pid">{{ data.id }}</el-descriptions-item>
         <el-descriptions-item label="创建时间">{{ new Date(data.createDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
         <el-descriptions-item label="标签">
           <template v-for="item in data.tagTranslation">
-            <el-tag>{{ item.key }}{{item.value?` / ${item.value}`:''}} </el-tag>
+            <el-tag>{{ item.key }}{{ item.value ? ` / ${item.value}` : '' }}</el-tag>
             <br>
           </template>
         </el-descriptions-item>
@@ -61,7 +61,7 @@
 
 <script>
 import BookmarkIcon from "@/components/bookmark-icon";
-import {mapState} from "vuex";
+import {mapGetters, mapState} from "vuex";
 import UserAvatar from "@/components/user-avatar";
 
 export default {
@@ -73,8 +73,15 @@ export default {
   computed: {
     ...mapState(`config`, [`config`])
   },
-  methods: {},
+  methods: {
+    ...mapGetters('pixivTagTranslation', [`getAllTranslations`]),
+  },
   mounted() {
+    //尝试翻译标签
+    const translation = this.getAllTranslations();
+    this.data.tagTranslation = this.data.tags.map(t => {
+      return {key: t, value: translation[t]}
+    })
   },
   watch: {},
   props: {

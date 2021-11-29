@@ -75,7 +75,6 @@ export default {
     ...mapActions('pixivUserIllust', [`findProfileAll`, `findProfileIllusts`, `getProfileIllusts`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     ...mapActions("pixivBookmark", [`findBookmark`, `getBookmark`]),
-    ...mapGetters('pixivTagTranslation',[`getAllTranslations`]),
     goPage(e) {
       this.$router.push(`/user/${this.$route.params.userId}/${this.type}/${e}`)
     },
@@ -89,17 +88,11 @@ export default {
           size: this.size,
           work_category: this.$route.params.type
         }).then(res => {
-          const translation =this.getAllTranslations();
           this.loading = false
           this.illust = copyObj(res)
 
           addDomains(this.illust,this.config.imgDomain)
 
-          this.illust.forEach(i => {
-            i.tagTranslation = i.tags.map(t=> {
-              return {key: t, value:translation[t]}
-            })
-          })
 
           if (this.config.filterBookmarked) {
             this.illust = this.illust.filter(i => !i.bookmarkData)
