@@ -4,6 +4,14 @@
     <el-header>
       <el-button type="primary" @click="dialogShow.setCookie=true;">设置Cookie</el-button>
       <el-button type="primary" @click="dialogShow.setToken=true;">设置Token</el-button>
+      <el-tooltip
+          effect="light"
+          placement="bottom"
+          :show-after="1000"
+        content="配置内容包括：token、图片服务器、下载目录、是否过滤已收藏作品、当前用户的uid、已保存的搜索关键字"
+      >
+        <el-button type="primary" @click="openConfig">导入/导出配置</el-button>
+      </el-tooltip>
     </el-header>
 
     <el-main>
@@ -39,9 +47,11 @@
 </template>
 
 <script>
-import {mapMutations, mapState} from "vuex";
+import {mapGetters, mapMutations, mapState} from "vuex";
 import {copyObj} from "@/assets/js/utils";
 import {setCookies} from "@/assets/js/cookieUtils";
+import {setTitle} from "@/assets/js/projectUtils";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 export default {
   name: "config",
@@ -60,7 +70,21 @@ export default {
     ...mapState(`config`, [`config`])
   },
   methods: {
-    ...mapMutations(`config`, [`updateConfig`]),
+    ...mapMutations(`config`, [`updateConfig`,`parseConfig`]),
+    ...mapGetters(`config`, [`stringifyConfig`]),
+    openConfig(){
+      ElMessageBox.prompt('导入/导出配置', '提示', {
+        confirmButtonText: '导入',
+        cancelButtonText: '取消',
+        inputValue: this.stringifyConfig(),
+      }).then(({value}) => {
+        this.updateConfig(JSON.parse(value))
+        ElMessage.success('导入成功');
+      }).catch(res => {
+        console.log(res)
+        ElMessage.info('已取消导入');
+      })
+    },
     changeConfig() {
       this.updateConfig(this.myConfig);
     },
@@ -77,6 +101,7 @@ export default {
     },
   },
   mounted() {
+    setTitle('配置')
     this.myConfig = copyObj(this.config);
   },
   watch: {},

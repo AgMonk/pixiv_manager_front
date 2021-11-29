@@ -15,16 +15,16 @@ export default {
             //是否过滤掉已收藏作品
             filterBookmarked: false,
             //当前用户的uid
-            uid:"",
+            uid: "",
             //保存搜索关键字
-            keywords:[],
-            keyword:"",
+            keywords: [],
+            keyword: "",
         },
     },
     mutations: {
         setConfig: (state, {key, value}) => {
             state.config[key] = value;
-            console.log('更新配置: '+key)
+            console.log('更新配置: ' + key)
             console.log(value)
             putCache("config", state.config);
         },
@@ -44,5 +44,9 @@ export default {
 
         },
     },
-    getters: {},
+    getters: {
+        stringifyConfig: (state) => {
+            return JSON.stringify(state.config)
+        },
+    },
 }
