@@ -14,7 +14,10 @@ export default {
             },
             //是否过滤掉已收藏作品
             filterBookmarked: false,
+            //当前用户的uid
             uid:"",
+            //保存搜索关键字
+            keywords:[],
         },
     },
     mutations: {

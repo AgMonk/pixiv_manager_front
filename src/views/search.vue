@@ -2,8 +2,8 @@
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
     <el-header>
-      <el-input v-model="keyword" style="width:300px" size="mini" @keypress.enter="goRouter(keyword,1)"/>
-      <el-button type="primary" @click="goRouter(keyword,1)" size="mini">搜索</el-button>
+      <el-input v-model="keyword" style="width:300px" size="mini" @keypress.enter="goRouter(keyword,1,true)"/>
+      <el-button type="primary" @click="goRouter(keyword,1,true)" size="mini">搜索</el-button>
       <filter-bookmarked @change="findPage(false)"/>
       <el-pagination layout="total,prev, pager, next, jumper"
                      :total="total"
@@ -52,9 +52,9 @@ export default {
   },
   methods: {
     ...mapActions('pixivSearch', [`findSearch`, `getSearch`]),
-    goRouter(keyword,page){
+    goRouter(keyword,page,force){
       this.$router.push(`/search/${keyword}/${page}`)
-      this.findPage(false)
+      this.findPage(force)
     },
     findPage(force) {
       this.loading = true
@@ -62,6 +62,8 @@ export default {
       const p = this.page;
       const keyword = this.keyword;
       const title = `搜索 ${keyword} 第 ${p} 页`;
+      console.log(title)
+      setTitle(title)
 
       return method({keyword, p}).then(res => {
         const domain = this.config.imgDomain;
