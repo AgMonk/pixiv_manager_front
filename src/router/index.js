@@ -31,14 +31,14 @@ export const routes = [
         redirect: '/follow-latest/1'
     },
     {
-        path: '/tags',
-        name: '标签管理',
-        component: tags
-    },
-    {
         path: '/config',
         name: '配置',
         component: () => import('../views/config.vue')
+    },
+    {
+        path: '/tags',
+        name: '标签管理',
+        component: tags
     },
 
 ]
