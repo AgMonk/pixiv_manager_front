@@ -41,13 +41,6 @@
                 <user-avatar :user="user"/>
               </template>
               <template #extra>
-                <follow-button
-                    v-if="user && user.hasOwnProperty('isFollowed')"
-                    :uid="user.userId"
-                    :is-followed="user.isFollowed"
-                    @follow-success="followSuccess"
-                    @unfollow-success="followSuccess"
-                />
               </template>
               <el-descriptions-item label="作品目录">
                 <router-link :to="`/user/${illust.userId}/illust/1`">
