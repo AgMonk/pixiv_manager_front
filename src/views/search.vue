@@ -20,19 +20,9 @@
       </el-dropdown>
 
       <filter-bookmarked @change="findPage(false)"/>
-      <el-pagination layout="total,prev, pager, next, jumper"
-                     :total="total"
-                     v-model:page-size="size"
-                     @current-change="goRouter(keyword,$event)"
-                     v-model:current-page="page"/>
     </el-header>
-    <el-main v-loading="loading">
-      <div v-if="!loading">
-        <illust-cards v-if="result.data" :data="result.data"
-                      @bookmark-add-success="bookmarkStatusChanged"
-                      @bookmark-del-success="bookmarkStatusChanged" />
-
-      </div>
+    <el-main >
+      <search-result v-if="keyword" :keyword="keyword" :page="page" />
     </el-main>
     <el-footer></el-footer>
   </el-container>
@@ -46,16 +36,14 @@ import IllustCard from "@/components/illust-card";
 import FilterBookmarked from "@/components/filter-bookmarked";
 import {copyObj} from "@/assets/js/utils";
 import IllustCards from "@/components/illust-cards";
+import SearchResult from "@/components/search-result";
 
 export default {
   name: "search",
-  components: {IllustCards, FilterBookmarked, IllustCard},
+  components: {SearchResult, IllustCards, FilterBookmarked, IllustCard},
   data() {
     return {
       page: 1,
-      size: 60,
-      total: 100,
-      loading: false,
       keyword: '',
       filterBookmarked: false,
       result: {},
@@ -124,7 +112,7 @@ export default {
       this.keyword = this.$route.params.keyword;
       // noinspection JSCheckFunctionSignatures
       this.page = parseInt(this.$route.params.page);
-      this.findPage(false)
+      // this.findPage(false)
     },
   },
   mounted() {
