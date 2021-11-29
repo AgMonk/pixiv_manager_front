@@ -44,6 +44,7 @@
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
 import {mapActions} from "vuex";
+import {setTitle} from "@/assets/js/projectUtils";
 
 export default {
   name: 'Home',
@@ -87,6 +88,8 @@ export default {
     }
   },
   mounted() {
+    setTitle('首页')
+
     this.findSearch({
       keyword: '少女前线',
     }).then(res => {

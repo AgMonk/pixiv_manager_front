@@ -109,6 +109,7 @@ import FollowButton from "@/components/follow-button";
 import axios from "axios";
 import PixivTag from "@/components/pixiv-tag";
 import UserAvatar from "@/components/user-avatar";
+import {setTitle} from "@/assets/js/projectUtils";
 
 export default {
   name: "artwork",
@@ -176,6 +177,9 @@ export default {
         this.handleUrls()
         this.loading = false;
         this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
+
+        setTitle(`${this.illust.title} - ${this.illust.userName}`)
+
       }).catch(reason => {
         this.loading = false;
         console.log(reason)

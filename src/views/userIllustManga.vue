@@ -53,6 +53,7 @@ import {copyObj} from "@/assets/js/utils";
 import FollowButton from "@/components/follow-button";
 import UserAvatar from "@/components/user-avatar";
 import {addDomains} from "@/assets/js/pixivUtils";
+import {setTitle} from "@/assets/js/projectUtils";
 
 export default {
   name: "userIllustManga",
@@ -172,10 +173,20 @@ export default {
         this.user.image = this.config.imgDomain + this.user.image
         this.user.imageBig = this.config.imgDomain + this.user.imageBig
         console.log(this.user)
+
+        let type ;
+        switch (this.$route.params.type) {
+          case 'illust':type='插画';break;
+          case 'manga':type='漫画';break;
+          case 'bookmark':type='收藏';break;
+        }
+        setTitle(`${this.user.name}的${type}`)
       })
     }
   },
   mounted() {
+
+
     this.filterBookmarked = this.config.filterBookmarked;
     this.init();
   },

@@ -40,6 +40,7 @@ import {mapActions, mapMutations, mapState} from "vuex";
 import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import {addDomains} from "@/assets/js/pixivUtils";
+import {setTitle} from "@/assets/js/projectUtils";
 
 export default {
   name: "followLatest",
@@ -85,6 +86,8 @@ export default {
     }
   },
   mounted() {
+    setTitle('我的关注作品')
+
     this.findPage(false);
     this.filterBookmarked = this.config.filterBookmarked;
   },
