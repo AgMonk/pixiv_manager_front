@@ -25,7 +25,6 @@
 
 <script>
 import {mapActions, mapMutations, mapState} from "vuex";
-import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import {addDomains} from "@/assets/js/pixivUtils";
 import {setTitle} from "@/assets/js/projectUtils";
@@ -34,7 +33,7 @@ import IllustCards from "@/components/illust-cards";
 
 export default {
   name: "followLatest",
-  components: {IllustCards, FilterBookmarked, IllustCard},
+  components: {IllustCards, FilterBookmarked},
   data() {
     return {
       page: 1,

@@ -14,7 +14,7 @@
           <el-input placeholder="可解析官网的用户、图片地址" v-model="url" style="width:300px"/>
           <el-button type="primary" @click="parseUrl(url)">解析</el-button>
         </el-form-item>
-         <el-form-item>
+        <el-form-item>
           <!--suppress HtmlUnknownAttribute -->
           <template #label>
             <span class="label">Pid</span>
@@ -29,6 +29,15 @@
           </template>
           <el-input v-model="uid" style="width:300px" type="number"/>
           <el-button type="primary" @click="routeToUser(uid)">跳转</el-button>
+        </el-form-item>
+
+        <el-form-item>
+          <!--suppress HtmlUnknownAttribute -->
+          <template #label>
+            <span class="label">搜索</span>
+          </template>
+          <el-input v-model="keyword" style="width:300px"/>
+          <el-button type="primary" @click="routeToSearch(keyword)">搜索</el-button>
         </el-form-item>
 
 
@@ -55,7 +64,7 @@ export default {
       url: '',
       pid: undefined,
       uid: undefined,
-      keyword:``,
+      keyword: ``,
     }
   },
   methods: {
@@ -97,7 +106,7 @@ export default {
 }
 </script>
 <style scoped>
-.label{
-  color:white;
+.label {
+  color: white;
 }
 </style>

@@ -24,9 +24,9 @@
         </el-header>
 
         <el-main v-loading="loading">
-          <illust-cards v-if="illust" :data="illust"
+          <illust-cards v-if="illust && illust.length>0" :data="illust"
                         @bookmark-add-success="bookmarkStatusChanged"
-                        @bookmark-del-success="bookmarkStatusChanged" />
+                        @bookmark-del-success="bookmarkStatusChanged"/>
         </el-main>
 
       </el-container>
@@ -37,7 +37,6 @@
 
 <script>
 import {mapActions, mapMutations, mapState} from "vuex";
-import IllustCard from "@/components/illust-card";
 import {copyObj} from "@/assets/js/utils";
 import FollowButton from "@/components/follow-button";
 import UserAvatar from "@/components/user-avatar";
@@ -48,7 +47,7 @@ import IllustCards from "@/components/illust-cards";
 
 export default {
   name: "userIllustManga",
-  components: {IllustCards, FilterBookmarked, UserAvatar, FollowButton, IllustCard},
+  components: {IllustCards, FilterBookmarked, UserAvatar, FollowButton},
   data() {
     return {
       loading: false,

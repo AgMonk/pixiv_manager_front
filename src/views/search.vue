@@ -66,7 +66,8 @@ export default {
         }).then(() => {
           this.keywords = this.keywords.filter(i => i !== name);
           if (this.currentTab === name) {
-            this.currentTab = this.keywords[0]
+            this.$router.push(`/search/${this.keywords[0]}/1`)
+            this.currentTab = this.keywords[0];
           }
         }).catch(() => {
           this.$message({
@@ -103,6 +104,9 @@ export default {
       this.$router.push(`/search/${this.currentTab}/1`)
     } else {
       this.currentTab = keyword;
+      if (!this.keywords.includes(this.currentTab)) {
+        this.keywords.push(this.currentTab)
+      }
     }
   },
   watch: {

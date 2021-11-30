@@ -1,5 +1,6 @@
 <template>
   <el-scrollbar style="height: 100%">
+    <div style="color:white">时间跨度: {{ timeRange }}</div>
     <div v-infinite-scroll="load"
          :infinite-scroll-disabled="list.length===data.length"
          :infinite-scroll-distance="50"
@@ -10,6 +11,7 @@
         <el-col v-for="item in list" :lg="4" :md="6" :sm="8" :xl="3"
                 :xs="12">
           <illust-card :data="item"
+                       :disableAvatar="$route.path.startsWith('/user')"
                        @bookmark-add-success="$emit('bookmark-add-success',$event)"
                        @bookmark-del-success="$emit('bookmark-del-success',$event)"
           />
@@ -26,6 +28,7 @@
 
 <script>
 import IllustCard from "@/components/illust-card";
+import {copyObj} from "@/assets/js/utils";
 
 export default {
   name: "illust-cards",
@@ -35,7 +38,8 @@ export default {
       offset: 0,
       limit: 6,
       list: [],
-      infiniteScroll: false
+      infiniteScroll: false,
+      timeRange: '',
     }
   },
   emits: ['bookmark-add-success', 'bookmark-del-success'],
@@ -47,10 +51,26 @@ export default {
         this.offset += this.limit;
       }
     },
+    //计算时间跨度
+    calculationTimeRange(data) {
+      const list = copyObj(data)
+      list.sort((a, b) => b.id - a.id)
+      const first = new Date(list[0].createDate).format("yyyy-MM-dd hh:mm");
+      const end = new Date(list[data.length - 1].createDate).format("yyyy-MM-dd hh:mm");
+      this.timeRange = `${first} ~ ${end}`
+    },
   },
   mounted() {
+    console.log(this.data)
+    this.calculationTimeRange(this.data)
   },
-  watch: {},
+  watch: {
+    "data": {
+      handler: function (e) {
+        this.calculationTimeRange(e)
+      }
+    }
+  },
   props: {
     data: {
       type: Object,
