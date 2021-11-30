@@ -26,6 +26,11 @@ export const routes = [
         component: () => import('../views/searchTabs.vue')
     },
     {
+        path: '/discovery',
+        name: '发现',
+        component: () => import('../views/discovery.vue')
+    },
+    {
         path: '/follow-latest',
         name: '关注作品',
         redirect: '/follow-latest/1'

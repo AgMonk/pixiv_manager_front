@@ -34,6 +34,8 @@ export default {
                     return []
                 }
 
+                // setTagTranslation(body,commit)
+
                 const translation = {};
                 //标签翻译
                 const tagTranslation = body.tagTranslation
