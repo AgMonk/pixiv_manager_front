@@ -1,19 +1,17 @@
-<!--搜索结果-->
 <template>
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <div style="text-align: left;color:white">
-        <span>搜索: {{ k }}</span>
-        <el-button type="primary" @click="editKeyword" size="mini" style="margin-left: 25px">修改</el-button>
-        <el-button type="primary" @click="findPage(true)" size="mini" style="margin-left: 25px">刷新</el-button>
+        <el-button size="mini" style="margin-left: 25px" type="primary" @click="editKeyword">修改关键字</el-button>
+        <el-button size="mini" style="margin-left: 25px" type="primary" @click="findPage(true)">刷新</el-button>
         <filter-bookmarked @change="findPage(false)"/>
       </div>
-      <el-pagination layout="total,prev, pager, next, jumper"
-                     :total="total"
+      <el-pagination v-model:current-page="p"
                      v-model:page-size="size"
-                     @current-change="p=$event;findPage(false)"
-                     v-model:current-page="p"/>
+                     :total="total"
+                     layout="total,prev, pager, next, jumper"
+                     @current-change="currentChanged"/>
 
     </el-header>
 
@@ -38,8 +36,9 @@ import {addDomains} from "@/assets/js/pixivUtils";
 import FilterBookmarked from "@/components/filter-bookmarked";
 import {ElMessage, ElMessageBox} from "element-plus";
 
+// noinspection JSCheckFunctionSignatures
 export default {
-  name: "search-result",
+  name: "searchTab",
   components: {FilterBookmarked, IllustCards},
   data() {
     return {
@@ -63,6 +62,9 @@ export default {
         p: this.p,
       })
     },
+    currentChanged(e) {
+      this.$router.push(`/search/${this.k}/${e}`);
+    },
     editKeyword() {
       ElMessageBox.prompt('修改搜索关键字', '提示', {
         confirmButtonText: '确认',
@@ -81,8 +83,7 @@ export default {
       const p = this.p;
       const keyword = this.k;
       const title = `搜索 ${keyword} 第 ${p} 页`;
-      this.$emit('page-changed', {keyword, p})
-      console.log(title)
+
       setTitle(title)
 
       return method({keyword, p}).then(res => {
@@ -106,46 +107,29 @@ export default {
         this.loading = false;
       })
     },
-    init() {
-      this.p = this.page;
-      this.k = this.keyword;
+    init({keyword, page}) {
+      this.p = parseInt(page);
+      this.k = keyword;
       this.findPage(false)
     },
   }
   ,
   mounted() {
-    this.init();
+    // noinspection JSCheckFunctionSignatures
+    this.init(this.$route.params);
   }
   ,
   watch: {
-    "keyword":
-        {
-          handler: function () {
-            this.init()
-          }
+    '$route': {
+      handler: function (e) {
+        if (e.path.startsWith('/search')) {
+          this.init(e.params)
         }
-    ,
-    "page":
-        {
-          handler: function () {
-            this.init()
-          }
-        }
-    ,
-
-  }
-  ,
-  props: {
-    keyword: {
-      required: true,
-      type: String,
-    },
-    page: {
-      required: true,
-      type: Number,
-      default: 1,
+      }
     }
   }
+  ,
+  props: {}
   ,
 }
 

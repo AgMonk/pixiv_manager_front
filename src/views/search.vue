@@ -1,14 +1,14 @@
 <template>
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
-<!--    <el-header></el-header>-->
-
     <el-main>
+      <!-- 保存的搜索关键字-->
       <el-tabs
           v-model="currentTab"
-          type="card"
           editable
+          type="card"
           @edit="tabEdit"
+          @tab-click='tabClick'
       >
         <el-tab-pane
             v-for="item in keywords"
@@ -23,35 +23,36 @@
               <span v-else>{{ item }}</span>
             </span>
           </template>
-          <search-result v-if="item===currentTab" :keyword="item" :page="1" @keyword-changed="keywordChanged"/>
+          <router-view v-if="item===currentTab" @keyword-changed="keywordChanged"/>
         </el-tab-pane>
       </el-tabs>
     </el-main>
-
   </el-container>
 
 </template>
 
 <script>
 import {mapMutations, mapState} from "vuex";
-import {setTitle} from "@/assets/js/projectUtils";
-import SearchResult from "@/components/search-result";
 
 export default {
-  name: "searchTabs",
-  components: {SearchResult},
+  name: "search",
+  computed: {
+    ...mapState(`config`, [`config`])
+  },
   data() {
     return {
       currentTab: '',
       keywords: [],
     }
   },
-  computed: {
-    ...mapState(`config`, [`config`])
-  },
   methods: {
     ...mapMutations(`config`, [`setConfig`]),
-    keywordChanged(e){
+    tabClick() {
+      this.$router.push(`/search/${this.currentTab}/1`)
+
+    },
+    keywordChanged(e) {
+      console.log(e)
       this.keywords = this.keywords.filter(i => i !== e.before);
       this.keywords.push(e.after)
       this.currentTab = e.after;
@@ -64,7 +65,7 @@ export default {
           type: 'warning'
         }).then(() => {
           this.keywords = this.keywords.filter(i => i !== name);
-          if (this.currentTab===name){
+          if (this.currentTab === name) {
             this.currentTab = this.keywords[0]
           }
         }).catch(() => {
@@ -94,7 +95,15 @@ export default {
   },
   mounted() {
     this.keywords = this.config.keywords;
-    this.currentTab = this.config.keyword;
+
+    const {keyword, page} = this.$route.params
+
+    if (!keyword || !page) {
+      this.currentTab = this.config.keyword;
+      this.$router.push(`/search/${this.currentTab}/1`)
+    } else {
+      this.currentTab = keyword;
+    }
   },
   watch: {
     "keywords": {
@@ -104,7 +113,6 @@ export default {
     },
     "currentTab": {
       handler: function (e) {
-        setTitle('搜索: ' + e)
         this.setConfig({key: 'keyword', value: e,})
       }
     }
@@ -114,13 +122,8 @@ export default {
 
 </script>
 
-<!--suppress CssUnusedSymbol -->
 <style scoped>
-.tabSelected {
-  color: white
-}
-
 .tabNotSelected {
-  color: #de6666
+  color: #ffd6d6
 }
 </style>

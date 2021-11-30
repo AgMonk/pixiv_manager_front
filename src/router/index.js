@@ -4,7 +4,7 @@ import tags from "@/views/tags";
 import {getCache} from "@/assets/js/storageUtils";
 
 
-const getUid = ()=>{
+const getUid = () => {
     const config = getCache('config');
     return config.uid;
 }
@@ -21,9 +21,9 @@ export const routes = [
         redirect: `/user/${getUid()}/bookmark/1`,
     },
     {
-        path: '/searchTabs',
+        path: '/search1',
         name: '搜索',
-        component: () => import('../views/searchTabs.vue')
+        redirect: `/search`,
     },
     {
         path: '/discovery',
@@ -62,6 +62,16 @@ const hiddenRoute = [
     {
         path: '/user/:userId/:type/:page',
         component: () => import('../views/userIllustManga.vue')
+    },
+    {
+        path: '/search',
+        component: () => import('../views/search.vue'),
+        children: [
+            {
+                path: ":keyword/:page",
+                component: () => import('../views/searchTab.vue'),
+            }
+        ]
     },
 ]
 
