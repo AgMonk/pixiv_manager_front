@@ -29,8 +29,10 @@ export default {
             putCache("config", state.config);
         },
         updateConfig: (state, payload) => {
+            const token = state.config.token
             state.config = copyObj(payload);
-            putCache("config", payload);
+            state.config.token = token;
+            putCache("config", state.config);
         },
         loadConfig: (state) => {
             const cache = getCache("config");
@@ -46,7 +48,9 @@ export default {
     },
     getters: {
         stringifyConfig: (state) => {
-            return JSON.stringify(state.config)
+            const json = copyObj(state.config)
+            delete json.token
+            return JSON.stringify(json)
         },
     },
 }
