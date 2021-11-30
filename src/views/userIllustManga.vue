@@ -24,7 +24,7 @@
         </el-header>
 
         <el-main v-loading="loading">
-          <illust-cards v-if="illust && illust.length>0" :data="illust"
+          <illust-cards v-if="!loading && illust && illust.length>0" :data="illust"
                         @bookmark-add-success="bookmarkStatusChanged"
                         @bookmark-del-success="bookmarkStatusChanged"/>
         </el-main>
@@ -109,7 +109,6 @@ export default {
           size: this.size,
           work_category: this.$route.params.type
         }).then(res => {
-          this.loading = false
           this.illust = copyObj(res)
 
           addDomains(this.illust, this.config.imgDomain)
@@ -119,6 +118,7 @@ export default {
             this.illust = this.illust.filter(i => !i.bookmarkData)
           }
           console.log(this.illust)
+          this.loading = false
           return res;
         }).catch(res => {
           console.log(res)
@@ -131,7 +131,6 @@ export default {
           page: this.page,
         }).then(res => {
           console.log(res)
-          this.loading = false
           this.total = res.total
           this.totalCount.bookmark = res.total
           this.illust = copyObj(res.works)
@@ -141,6 +140,7 @@ export default {
             this.illust = this.illust.filter(i => !i.bookmarkData)
           }
           console.log(this.illust)
+          this.loading = false
         }).catch(res => {
           this.loading = false
           console.log(res)
@@ -162,9 +162,7 @@ export default {
         if (['illust', 'manga'].includes(this.type)) {
           this.total = Object.keys(res[this.type]).length;
         }
-        this.findPage(force).catch(() => {
-          this.loading = false
-        })
+        this.findPage(force)
       })
 
       this.findUserInfo(this.$route.params.userId).then(res => {

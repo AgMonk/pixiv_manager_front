@@ -65,11 +65,15 @@ export default {
     this.calculationTimeRange(this.data)
   },
   watch: {
-    "data": {
-      handler: function (e) {
-        this.calculationTimeRange(e)
-      }
-    }
+    // "data": {
+    //   handler: function (e) {
+    //     console.log(e)
+    //     this.offset = 0;
+    //     this.list = [];
+    //     this.load()
+    //     this.calculationTimeRange(e)
+    //   }
+    // }
   },
   props: {
     data: {
