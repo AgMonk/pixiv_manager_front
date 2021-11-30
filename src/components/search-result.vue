@@ -25,7 +25,7 @@
 
       </div>
     </el-main>
-    <el-footer></el-footer>
+
   </el-container>
 
 </template>
@@ -57,7 +57,7 @@ export default {
   methods: {
     ...mapActions('pixivSearch', [`findSearch`, `getSearch`]),
     ...mapMutations(`pixivSearch`, [`delCache`]),
-    bookmarkStatusChanged(e) {
+    bookmarkStatusChanged() {
       this.delCache({
         keyword: this.k,
         p: this.p,
@@ -120,14 +120,14 @@ export default {
   watch: {
     "keyword":
         {
-          handler: function (e) {
+          handler: function () {
             this.init()
           }
         }
     ,
     "page":
         {
-          handler: function (e) {
+          handler: function () {
             this.init()
           }
         }
@@ -138,21 +138,15 @@ export default {
   props: {
     keyword: {
       required: true,
-      type
-:
-String,
-}
-,
-page: {
-  required: true,
-      type
-:
-  Number,
-default:
-  1,
-}
-}
-,
+      type: String,
+    },
+    page: {
+      required: true,
+      type: Number,
+      default: 1,
+    }
+  }
+  ,
 }
 
 </script>

@@ -28,7 +28,7 @@
                         @bookmark-add-success="bookmarkStatusChanged"
                         @bookmark-del-success="bookmarkStatusChanged" />
         </el-main>
-        <el-footer></el-footer>
+
       </el-container>
     </el-main>
   </el-container>
@@ -163,7 +163,7 @@ export default {
         if (['illust', 'manga'].includes(this.type)) {
           this.total = Object.keys(res[this.type]).length;
         }
-        this.findPage(force).catch(res => {
+        this.findPage(force).catch(() => {
           this.loading = false
         })
       })

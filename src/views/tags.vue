@@ -60,6 +60,7 @@
         <el-table-column prop="redirect" v-if="params.filter.type==='重定向'" label="重定向" width="300px"/>
         <el-table-column prop="type" label="标签类型"  v-if="params.filter.type==='已完成'" width="100px"/>
         <el-table-column  label="操作" >
+          <!--suppress HtmlUnknownAttribute -->
           <template #default="props">
             <el-link class="operationLink" target="_blank" :href="`https://fanyi.baidu.com/#${getLanguage(props.row.tag)}/zh/${props.row.tag}`">百度翻译</el-link>
             <el-link class="operationLink" target="_blank" :href="`https://www.baidu.com/s?wd=${props.row.tag}`">百度搜索</el-link>
@@ -70,7 +71,7 @@
       </el-table>
 
     </el-main>
-    <el-footer></el-footer>
+
   </el-container>
 
 </template>

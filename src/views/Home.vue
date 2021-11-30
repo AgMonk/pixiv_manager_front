@@ -35,7 +35,7 @@
       </el-form>
 
     </el-main>
-    <el-footer></el-footer>
+
   </el-container>
 
 </template>
@@ -43,7 +43,6 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
-import {mapActions} from "vuex";
 import {setTitle} from "@/assets/js/projectUtils";
 
 export default {

@@ -41,7 +41,7 @@
 
 
     </el-main>
-    <el-footer></el-footer>
+
   </el-container>
 
 </template>
@@ -80,6 +80,7 @@ export default {
       }).then(({value}) => {
         this.updateConfig(JSON.parse(value))
         ElMessage.success('导入成功');
+        setTimeout(() => document.location.reload(), 1000)
       }).catch(res => {
         console.log(res)
         ElMessage.info('已取消导入');

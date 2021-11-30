@@ -9,6 +9,7 @@
 <script>
 import {copyObj} from "@/assets/js/utils";
 import {mapActions, mapState} from "vuex";
+import {ElMessage} from "element-plus";
 
 export default {
   name: "bookmark-icon",
@@ -52,14 +53,15 @@ export default {
           pid: this.pid,
           token: this.config.token
         }).then(res => {
-          this.$emit("bookmark-add-success",this.pid)
-          this.$message.success(`收藏成功 pid = ${this.pid}`)
+          this.$emit("bookmark-add-success", this.pid)
+          ElMessage.success(`收藏成功 pid = ${this.pid}`)
           this.loading = false;
-          this.bookmarkData = {id:res.last_bookmark_id}
-          this.color ='red'
-        }).catch(res=>{
-          this.$message.err("请求超时请重试")
-          this.color ='white'
+          this.bookmarkData = {id: res.last_bookmark_id}
+          this.color = 'red'
+        }).catch(reason => {
+          ElMessage.error("请求超时请重试")
+          console.log(reason)
+          this.color = 'white'
           this.loading = false;
         })
       }

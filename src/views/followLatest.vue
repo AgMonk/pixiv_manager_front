@@ -18,7 +18,7 @@
                       @bookmark-del-success="delCache(page)" />
       </div>
     </el-main>
-    <el-footer></el-footer>
+
   </el-container>
 
 </template>
@@ -67,6 +67,7 @@ export default {
         console.log(this.illust)
         this.loading = false;
       }).catch(reason => {
+        console.log(reason)
         this.loading = false;
       })
     }

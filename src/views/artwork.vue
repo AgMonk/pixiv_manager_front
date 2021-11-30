@@ -96,7 +96,7 @@
         </el-aside>
       </el-container>
     </el-main>
-    <el-footer></el-footer>
+
   </el-container>
 
 </template>

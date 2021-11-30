@@ -27,7 +27,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-main>
-    <el-footer></el-footer>
+
   </el-container>
 
 </template>
@@ -114,6 +114,7 @@ export default {
 
 </script>
 
+<!--suppress CssUnusedSymbol -->
 <style scoped>
 .tabSelected {
   color: white
