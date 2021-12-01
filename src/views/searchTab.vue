@@ -47,7 +47,7 @@ export default {
       p: 1,
       k: '',
       size: 60,
-      result: [],
+      result: {},
     }
   },
   computed: {
@@ -73,12 +73,14 @@ export default {
       }).then(({value}) => {
         ElMessage.success('修改成功');
         this.$emit("keyword-changed", {before: this.k, after: value})
-      }).catch(() => {
+      }).catch(res => {
+        console.log(res)
         ElMessage.info('已取消');
       })
     },
     findPage(force) {
       this.loading = true
+      this.result = {};
       const method = force ? this.getSearch : this.findSearch;
       const p = this.p;
       const keyword = this.k;

@@ -74,6 +74,10 @@ pixivNetPostRequest.interceptors.response.use(response => {
     if (data.error) {
         throw data.message
     }
+    if (!data.body) {
+        console.log(response)
+        throw "请求结果为空，请重试";
+    }
     return data.body;
 }, (error) => {
     console.error(error)
