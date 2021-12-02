@@ -66,6 +66,10 @@
             <el-link class="operationLink" target="_blank" :href="`https://www.baidu.com/s?wd=${props.row.tag}`">百度搜索</el-link>
             <el-link class="operationLink" target="_blank" :href="`https://dic.pixiv.net/a/${props.row.tag}`">Pixiv字典</el-link>
             <el-link class="operationLink" target="_blank" :href="`https://www.pixiv.net/tags/${props.row.tag}/artworks?s_mode=s_tag`">Pixiv搜索</el-link>
+            <el-link :href="`https://zh.moegirl.org.cn/index.php?search=${props.row.tag}&title=Special%3A%E6%90%9C%E7%B4%A2&profile=default&fulltext=1`"
+                     class="operationLink"
+                     target="_blank">萌娘百科
+            </el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -79,6 +83,7 @@
 <script>
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 import ImagePreview from "@/components/my/image-preview";
+import {setTitle} from "@/assets/js/projectUtils";
 
 export default {
   name: "tags",
@@ -171,14 +176,13 @@ export default {
     refresh() {
       this.setParams(this.params);
       this.page().then(res => {
-        if (res.code === 2000) {
-          this.pageData = res.data.records;
-          this.total = res.data.total;
+        this.pageData = res.records;
+        this.total = res.total;
 
-          this.formData = {}
-          this.expandRowKeys = []
-          this.expandRowKeys.push(this.getRowKey(this.pageData[0]))
-        }
+
+        this.formData = {}
+        this.expandRowKeys = []
+        this.expandRowKeys.push(this.getRowKey(this.pageData[0]))
       })
       this.findAllCompletedTags().then(res => {
         if (res.code === 2000) {
@@ -188,6 +192,7 @@ export default {
     },
   },
   mounted() {
+    setTitle("标签管理")
     this.params = this.getParams()
     this.refresh();
     this.findAllTypes();

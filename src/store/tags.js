@@ -28,6 +28,24 @@ export default {
             return request({
                 url: prefix + "page",
                 data: state.params,
+            }).then(res => {
+                if (res.code === 2000) {
+                    const data = res.data;
+
+                    data.records.forEach(item => {
+                        if (item.examples && item.examples.length > 0) {
+                            item.examples = item.examples.map(i => {
+                                let index = i.lastIndexOf('/') + 1;
+                                const s1 = i.substring(0, index);
+                                const s2 = encodeURIComponent(i.substring(index));
+                                return s1 + s2;
+                            })
+                        }
+                    })
+
+                    return data;
+                }
+                throw res.message;
             })
         },
         findAllTypes: ({dispatch, commit, state}) => {
