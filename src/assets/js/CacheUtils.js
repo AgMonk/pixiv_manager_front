@@ -13,9 +13,10 @@ export const checkCache = (cacheObj,key,expires,requestMethod) =>{
         console.log("从缓存读取数据 "+key)
         return new Promise((r) => r(JSON.parse(JSON.stringify(cacheObj[key].body))))
     }
-    return requestMethod().then(body=>{
-        console.log("数据写入缓存 "+key)
-        cacheObj[key] = {body,time}
+    return requestMethod().then(body => {
+        console.log("数据写入缓存 " + key)
+        console.log(body)
+        cacheObj[key] = {body, time}
         return JSON.parse(JSON.stringify(body));
     })
 }

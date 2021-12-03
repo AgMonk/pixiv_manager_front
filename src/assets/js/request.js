@@ -1,5 +1,16 @@
 import axios from "axios";
-import {ElMessage} from "element-plus";
+
+const timeoutPattern = /timeout of (\d+)ms exceeded/g
+
+const onRejected = (error) => {
+    let matcher = timeoutPattern.exec(error);
+    if (matcher) {
+        let seconds = parseInt(matcher[1]) / 1000;
+        throw `请求超时 (${seconds} 秒) 请重试`;
+    }
+    console.error(error)
+    throw error;
+}
 
 export const request = axios.create({
     baseURL: "/api/",
@@ -51,11 +62,7 @@ request.interceptors.response.use(response => {
     }
     // ElMessage.error(data.message);
     throw data;
-}, (error) => {
-    console.error(error)
-    ElMessage.error(error.message);
-    return Promise.reject(error)
-});
+}, onRejected);
 pixivNetRequest.interceptors.response.use(response => {
     // return response.data
     let data = response.data;
@@ -67,11 +74,7 @@ pixivNetRequest.interceptors.response.use(response => {
         throw "请求结果为空，请重试";
     }
     return data.body;
-}, (error) => {
-    console.error(error)
-    ElMessage.error(error.message);
-    return Promise.reject(error)
-});
+}, onRejected);
 pixivNetPostRequest.interceptors.response.use(response => {
     // return response.data
     let data = response.data;
@@ -83,16 +86,8 @@ pixivNetPostRequest.interceptors.response.use(response => {
         throw "请求结果为空，请重试";
     }
     return data.body;
-}, (error) => {
-    console.error(error)
-    ElMessage.error(error.message);
-    return Promise.reject(error)
-});
+}, onRejected);
 pixivNetPostFormDataRequest.interceptors.response.use(response => {
     // return response.data
     return response.data;
-}, (error) => {
-    console.error(error)
-    ElMessage.error(error.message);
-    return Promise.reject(error)
-});
+}, onRejected);

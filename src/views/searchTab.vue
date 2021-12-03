@@ -105,7 +105,8 @@ export default {
         this.result = res;
         this.loading = false
       }).catch(res => {
-        console.log(res)
+        console.error(res + " " + title)
+        ElMessage.error(res)
         this.loading = false;
       })
     },

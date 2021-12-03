@@ -15,13 +15,13 @@ export default {
   name: "bookmark-icon",
   data() {
     return {
-      color:'white',
+      color: 'white',
       defaultSize: 30,
       loading: false,
       bookmarkData: {},
     }
   },
-  emits: ['bookmark-add-success','bookmark-del-success'],
+  emits: ['bookmark-add-success', 'bookmark-del-success'],
   computed: {
     ...mapState(`config`, [`config`])
   },
@@ -31,20 +31,22 @@ export default {
       this.loading = true;
       //取消收藏
       if (this.bookmarkData && this.bookmarkData.id) {
-        this.color ='white'
+        this.color = 'white'
         this.bookmarkDel({
           bookmarkId: this.bookmarkData.id,
           token: this.config.token
         }).then(res => {
           console.log(res)
-          this.$emit("bookmark-del-success",this.pid)
+          this.$emit("bookmark-del-success", this.pid)
           this.$message.success(`取消收藏成功 pid = ${this.pid}`)
           this.loading = false;
           this.bookmarkData = {}
-          this.color ='white'
-        }).catch(res=>{
-          this.$message.warn("请求超时请重试")
-          this.color ='red'
+          this.color = 'white'
+        }).catch(reason => {
+          const message = reason + `pid = ${(this.pid)}`;
+          console.error(message)
+          ElMessage.error(message)
+          this.color = 'red'
           this.loading = false;
         })
       } else {
@@ -54,24 +56,25 @@ export default {
           token: this.config.token
         }).then(res => {
           this.$emit("bookmark-add-success", this.pid)
-          ElMessage.success(`收藏成功 pid = ${this.pid}`)
+          ElMessage.success(`收藏成功 pid = ${(this.pid)}`)
           this.loading = false;
           this.bookmarkData = {id: res.last_bookmark_id}
           this.color = 'red'
         }).catch(reason => {
-          ElMessage.error("请求超时请重试")
-          console.log(reason)
+          const message = reason + ` pid = ${(this.pid)}`;
+          console.error(message)
+          ElMessage.error(message)
           this.color = 'white'
           this.loading = false;
         })
       }
     },
-    updateData(data){
-      this.bookmarkData = data?copyObj(data):{}
-      if (this.bookmarkData && this.bookmarkData.hasOwnProperty('id')){
-        this.color ="red"
-      }else{
-        this.color ='white'
+    updateData(data) {
+      this.bookmarkData = data ? copyObj(data) : {}
+      if (this.bookmarkData && this.bookmarkData.hasOwnProperty('id')) {
+        this.color = "red"
+      } else {
+        this.color = 'white'
       }
     },
   },

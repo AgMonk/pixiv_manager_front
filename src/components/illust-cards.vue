@@ -46,7 +46,7 @@ export default {
   methods: {
     load() {
       if (this.offset < this.data.length) {
-        console.log(`加载数据 ${this.offset}`)
+        // console.log(`加载数据 ${this.offset}`)
         this.list.push(...this.data.slice(this.offset, this.offset + this.limit))
         this.offset += this.limit;
       }

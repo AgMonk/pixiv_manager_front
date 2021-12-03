@@ -7,7 +7,7 @@ export default {
     mutations: {
         setTranslation(state, {key, value}) {
             if (key && value) {
-                console.log(`设置翻译 ${key} -> ${value}`)
+                // console.log(`设置翻译 ${key} -> ${value}`)
                 state.translation[key] = value;
             }
         }
