@@ -4,7 +4,7 @@
     <!--  <el-container direction="horizontal">-->
     <el-header>
       <el-button type="primary" @click="findPage(true)" size="mini">刷新</el-button>
-      <filter-bookmarked @change="findPage(false)" />
+      <filter-bookmarked @change="findPage(false)"/>
       <el-pagination layout="prev, pager, next, jumper"
                      :page-count="65535"
                      :pager-count="9"
@@ -15,7 +15,7 @@
       <div v-if="!loading">
         <illust-cards v-if="illust" :data="illust"
                       @bookmark-add-success="delCache(page)"
-                      @bookmark-del-success="delCache(page)" />
+                      @bookmark-del-success="delCache(page)"/>
       </div>
     </el-main>
 
@@ -47,18 +47,19 @@ export default {
   },
   methods: {
     ...mapActions('pixivFollowLatest', [`findFollowLatest`, `getFollowLatest`]),
-    ...mapMutations(`pixivFollowLatest`,[`delCache`] ),
+    ...mapMutations(`pixivFollowLatest`, [`delCache`]),
     goPage(e) {
       this.$router.push(`/follow-latest/${e}`)
     },
     findPage(force) {
       this.page = parseInt(this.$route.params.page);
       this.loading = true;
-      const method = force ? this.getFollowLatest : this.findFollowLatest;
-      method(this.page).then(res => {
+      this.findFollowLatest({
+        force, p: this.page
+      }).then(res => {
         this.illust = copyObj(res);
 
-        addDomains(this.illust,this.config.imgDomain)
+        addDomains(this.illust, this.config.imgDomain)
 
         if (this.config.filterBookmarked) {
           this.illust = this.illust.filter(i => !i.bookmarkData)

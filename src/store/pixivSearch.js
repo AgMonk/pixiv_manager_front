@@ -1,6 +1,6 @@
 // 搜索作品
 import {pixivNetRequest} from "@/assets/js/request";
-import {checkCache} from "@/assets/js/CacheUtils";
+import {getFromCache} from "@/assets/js/CacheUtils";
 import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 import {ElMessage} from "element-plus";
 
@@ -47,12 +47,19 @@ export default {
                 ElMessage.error(reason)
             })
         },
-        findSearch: ({dispatch, commit, state}, {keyword, p = 1, mode = 'all'}) => {
+        findSearch: ({dispatch, commit, state}, {force, keyword, p = 1, mode = 'all'}) => {
             if (!state.cache.hasOwnProperty(keyword)) {
                 state.cache[keyword] = {}
             }
-            return checkCache(state.cache[keyword], getKey({keyword, p, mode})
-                , 10 * 60, () => dispatch("getSearch", {keyword, p, mode}))
+            const key = getKey({keyword, p, mode})
+            console.log(key)
+            return getFromCache({
+                cacheObj: state.cache[keyword],
+                key,
+                requestMethod: () => dispatch("getSearch", {keyword, p, mode}),
+                expires: 30 * 60,
+                force
+            })
         },
         method: ({dispatch, commit, state}, payload) => {
 

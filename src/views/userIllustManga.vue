@@ -102,12 +102,12 @@ export default {
     findPage(force) {
       this.loading = true
       if (['illust', 'manga'].includes(this.type)) {
-        const method = force ? this.getProfileIllusts : this.findProfileIllusts;
-        return method({
+        return this.findProfileIllusts({
           uid: this.$route.params.userId,
           page: this.page,
           size: this.size,
-          work_category: this.$route.params.type
+          work_category: this.$route.params.type,
+          force
         }).then(res => {
           this.illust = copyObj(res)
 
@@ -124,11 +124,11 @@ export default {
           console.log(res)
         })
       } else if ('bookmark' === this.type) {
-        const method = force ? this.getBookmark : this.findBookmark;
-        return method({
+        return this.findBookmark({
           uid: this.$route.params.userId,
           tag: this.tag,
           page: this.page,
+          force,
         }).then(res => {
           console.log(res)
           this.total = res.total
@@ -153,7 +153,7 @@ export default {
       this.type = this.$route.params.type;
 
       this.loading = true
-      this.findProfileAll(this.$route.params.userId).then(res => {
+      this.findProfileAll({force, uid: this.$route.params.userId}).then(res => {
         console.log(res)
         this.loading = false
         this.totalCount.illust = Object.keys(res['illust']).length;
@@ -165,7 +165,7 @@ export default {
         this.findPage(force)
       })
 
-      this.findUserInfo(this.$route.params.userId).then(res => {
+      this.findUserInfo({force, uid: this.$route.params.userId}).then(res => {
         this.user = copyObj(res);
         this.user.image = this.config.imgDomain + this.user.image
         this.user.imageBig = this.config.imgDomain + this.user.imageBig

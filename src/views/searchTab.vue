@@ -54,7 +54,7 @@ export default {
     ...mapState(`config`, [`config`])
   },
   methods: {
-    ...mapActions('pixivSearch', [`findSearch`, `getSearch`]),
+    ...mapActions('pixivSearch', [`findSearch`]),
     ...mapMutations(`pixivSearch`, [`delCache`]),
     bookmarkStatusChanged() {
       this.delCache({
@@ -81,14 +81,13 @@ export default {
     findPage(force) {
       this.loading = true
       this.result = {};
-      const method = force ? this.getSearch : this.findSearch;
       const p = this.p;
       const keyword = this.k;
       const title = `搜索 ${keyword} 第 ${p} 页`;
 
       setTitle(title)
 
-      return method({keyword, p}).then(res => {
+      return this.findSearch({keyword, p, force}).then(res => {
         const domain = this.config.imgDomain;
         addDomains(res.data, domain)
         addDomains(res.popular.recent, domain)
@@ -119,7 +118,8 @@ export default {
   ,
   mounted() {
     // noinspection JSCheckFunctionSignatures
-    this.init(this.$route.params);
+    console.log('init')
+
   }
   ,
   watch: {

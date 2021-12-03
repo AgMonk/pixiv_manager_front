@@ -1,6 +1,6 @@
 // 关注用户的作品
 import {pixivNetRequest} from "@/assets/js/request";
-import {checkCache} from "@/assets/js/CacheUtils";
+import {getFromCache} from "@/assets/js/CacheUtils";
 import {copyObj} from "@/assets/js/utils";
 import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 
@@ -55,8 +55,8 @@ export default {
                 replacePixivNetArray(list)
 
                 list.forEach(item => {
-                    item.tagTranslation = item.tags.map(t=> {
-                        return {key: t, value:translation[t]}
+                    item.tagTranslation = item.tags.map(t => {
+                        return {key: t, value: translation[t]}
                     })
                 })
 
@@ -64,8 +64,13 @@ export default {
                 return copyObj(list);
             })
         },
-        findFollowLatest: ({dispatch, commit, state}, p) => {
-            return checkCache(state.cache, getKey(p), 60, () => dispatch("getFollowLatest", p))
+        findFollowLatest: ({dispatch, commit, state}, {p, force}) => {
+            return getFromCache({
+                cacheObj: state.cache,
+                key: getKey(p),
+                requestMethod: () => dispatch("getFollowLatest", p),
+                force
+            })
         },
         method: ({dispatch, commit, state}, payload) => {
 

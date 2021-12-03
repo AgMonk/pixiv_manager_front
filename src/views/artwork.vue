@@ -125,12 +125,8 @@ export default {
     ...mapState(`config`, [`config`])
   },
   methods: {
-    ...mapActions("pixivIllust", [`findDetail`, `getDetail`]),
+    ...mapActions("pixivIllust", [`findDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
-    followSuccess(uid) {
-      this.user.isFollowed = !this.user.isFollowed
-      this.getUserInfo(uid).then(res => this.user = copyObj(res))
-    },
     downloadWithAria2() {
       let id = new Date().getTime();
       this.illust.urls.original.forEach(url => {
@@ -168,15 +164,14 @@ export default {
     },
     refresh(force) {
       this.loading = true;
-      const method = force ? this.getDetail : this.findDetail
-      method(this.$route.params.pid).then(res => {
+      this.findDetail({force, pid: this.$route.params.pid}).then(res => {
         if (force) {
           this.$message.success("刷新成功")
         }
         this.illust = copyObj(res)
         this.handleUrls()
         this.loading = false;
-        this.findUserInfo(this.illust.userId).then(res => this.user = copyObj(res))
+        this.findUserInfo({force, uid: this.illust.userId}).then(res => this.user = copyObj(res))
 
         setTitle(`${this.illust.title} - ${this.illust.userName}`)
 

@@ -1,7 +1,7 @@
 // 收藏和关注
 
 import {pixivNetPostFormDataRequest, pixivNetPostRequest, pixivNetRequest} from "@/assets/js/request";
-import {checkCache} from "@/assets/js/CacheUtils";
+import {getFromCache} from "@/assets/js/CacheUtils";
 import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 
 const prefix = '/'
@@ -16,7 +16,7 @@ export default {
         cache: {},
     },
     mutations: {
-        delCache: (state,{uid, tag, rest = 'show', page, size}) => {
+        delCache: (state, {uid, tag, rest = 'show', page, size}) => {
             console.log(`移除缓存 ${getKey({uid, tag, rest, page, size})}`)
             delete state.cache[getKey({uid, tag, rest, page, size})]
         },
@@ -92,9 +92,13 @@ export default {
                 return res
             })
         },
-        findBookmark: ({dispatch, commit, state}, {uid, tag, rest = 'show', page = 1, size = 48}) => {
-            return checkCache(state.cache, getKey({uid, tag, rest, page, size})
-                , 60, () => dispatch("getBookmark", {uid, tag, rest, page, size}))
+        findBookmark: ({dispatch, commit, state}, {force, uid, tag, rest = 'show', page = 1, size = 48}) => {
+            return getFromCache({
+                cacheObj: state.cache,
+                key: getKey({uid, tag, rest, page, size}),
+                requestMethod: () => dispatch("getBookmark", {uid, tag, rest, page, size}),
+                force
+            })
         },
         method: ({dispatch, commit, state}, payload) => {
 

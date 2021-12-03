@@ -5,13 +5,15 @@
  * @param key key
  * @param expires 有效时间（秒）
  * @param requestMethod 请求方法
+ * @param force 是否强制发送请求
  */
-export const checkCache = (cacheObj,key,expires,requestMethod) =>{
-    //当前时间（秒）
-    const time = Math.floor(new Date().getTime() / 1000 )
-    if (cacheObj.hasOwnProperty(key) &&  time-cacheObj[key].time<expires){
-        console.log("从缓存读取数据 "+key)
-        return new Promise((r) => r(JSON.parse(JSON.stringify(cacheObj[key].body))))
+export const getFromCache = ({cacheObj, key, requestMethod, expires = 60, force = false}) => {
+    const time = Math.floor(new Date().getTime() / 1000)
+    if (!force && cacheObj.hasOwnProperty(key) && time - cacheObj[key].time < expires) {
+        console.log("从缓存读取数据 " + key)
+        const body = JSON.parse(JSON.stringify(cacheObj[key].body));
+        console.log(body)
+        return new Promise((r) => r(body))
     }
     return requestMethod().then(body => {
         console.log("数据写入缓存 " + key)

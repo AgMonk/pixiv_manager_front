@@ -1,6 +1,6 @@
 // pixiv作品详情
 import {pixivNetRequest} from "@/assets/js/request";
-import {checkCache} from "@/assets/js/CacheUtils";
+import {getFromCache} from "@/assets/js/CacheUtils";
 
 const prefix = '/ajax/illust/'
 
@@ -45,8 +45,14 @@ export default {
             })
         },
         //检查缓存中是否有作品详情，有则直接使用
-        findDetail: ({dispatch, commit, state}, pid) => {
-            return checkCache(state.cache,pid+"",60*60,()=>dispatch("getDetail",pid))
+        findDetail: ({dispatch, commit, state}, {pid, force}) => {
+            return getFromCache({
+                cacheObj: state.cache,
+                key: pid + "",
+                requestMethod: () => dispatch("getDetail", pid),
+                expires: 30 * 60,
+                force,
+            })
         },
 
         method: ({dispatch, commit, state}, payload) => {

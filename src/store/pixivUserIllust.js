@@ -1,6 +1,6 @@
 // pixiv用户的作品
 import {pixivNetRequest} from "@/assets/js/request";
-import {checkCache} from "@/assets/js/CacheUtils";
+import {getFromCache} from "@/assets/js/CacheUtils";
 import {replacePixivNetOne} from "@/assets/js/pixivUtils";
 
 function getKey({uid, work_category, size, page}) {
@@ -29,8 +29,14 @@ export default {
             })
         },
         //获取作者所有作品id
-        findProfileAll: ({dispatch, commit, state}, uid) => {
-            return checkCache(state.all, `${uid}` , 60 * 60, () => dispatch("getProfileAll", uid))
+        findProfileAll: ({dispatch, commit, state}, {uid, force}) => {
+            return getFromCache({
+                cacheObj: state.all,
+                key: uid + "",
+                expires: 60 * 60,
+                requestMethod: () => dispatch("getProfileAll", uid),
+                force,
+            })
         },
         /**
          * 获取指定id的作者作品信息
@@ -71,15 +77,20 @@ export default {
                 return a;
             })
         },
-        findProfileIllusts: ({dispatch, commit, state}, {uid, page, size, work_category, lang = 'zh'}) => {
+        findProfileIllusts: ({dispatch, commit, state}, {force, uid, page, size, work_category, lang = 'zh'}) => {
             const userId = uid + ``;
             if (!state.all.hasOwnProperty(userId)) {
                 throw "还未获取id列表"
             }
             //缓存key
             const key = getKey({uid, work_category, size, page});
-            return checkCache(state.illusts, key, 60 * 60, () => dispatch("getProfileIllusts"
-                , {uid, page, size, work_category, lang }))
+            return getFromCache({
+                cacheObj: state.illusts,
+                key: key,
+                expires: 60 * 60,
+                requestMethod: () => dispatch("getProfileIllusts", {uid, page, size, work_category, lang}),
+                force,
+            })
         },
         method: ({dispatch, commit, state}, payload) => {
 
