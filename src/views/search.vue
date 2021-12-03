@@ -23,9 +23,9 @@
               <span v-else>{{ item }}</span>
             </span>
           </template>
-          <router-view v-if="item===currentTab" @keyword-changed="keywordChanged"/>
         </el-tab-pane>
       </el-tabs>
+          <router-view @keyword-changed="keywordChanged"/>
     </el-main>
   </el-container>
 
@@ -43,6 +43,8 @@ export default {
     return {
       currentTab: '',
       keywords: [],
+      keyword: '',
+      page: 1,
     }
   },
   methods: {
@@ -103,10 +105,10 @@ export default {
       this.currentTab = this.config.keyword;
       this.$router.push(`/search/${this.currentTab}/1`)
     } else {
-      this.currentTab = keyword;
       if (!this.keywords.includes(this.currentTab)) {
         this.keywords.push(this.currentTab)
       }
+      this.currentTab = keyword;
     }
   },
   watch: {

@@ -110,6 +110,7 @@ export default {
       })
     },
     init({keyword, page}) {
+      console.clear()
       this.p = parseInt(page);
       this.k = keyword;
       this.findPage(false)
@@ -118,8 +119,8 @@ export default {
   ,
   mounted() {
     // noinspection JSCheckFunctionSignatures
+    this.init(this.$route.params)
     console.log('init')
-
   }
   ,
   watch: {
