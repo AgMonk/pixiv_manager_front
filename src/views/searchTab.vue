@@ -120,7 +120,6 @@ export default {
   mounted() {
     // noinspection JSCheckFunctionSignatures
     this.init(this.$route.params)
-    console.log('init')
   }
   ,
   watch: {

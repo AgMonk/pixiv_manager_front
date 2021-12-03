@@ -69,9 +69,10 @@ export default {
   },
   methods: {
     parseUrl(url) {
-      const pattern_artwork = /https:\/\/www\.pixiv\.net\/artworks\/(\d+)/g
-      const pattern_user = /https:\/\/www\.pixiv\.net\/users\/(\d+)$/g
-      const pattern_user_artwork = /https:\/\/www\.pixiv\.net\/users\/(\d+)\/artworks$/g
+      const pattern_artwork = /pixiv\.net\/artworks\/(\d+)/g
+      const pattern_user = /pixiv\.net\/users\/(\d+)$/g
+      const pattern_user_artwork = /pixiv\.net\/users\/(\d+)\/artworks$/g
+      const pattern_user_artwork_2 = /pixiv\.net\/.+?\/users\/(\d+)/g
 
       let g1 = pattern_artwork.exec(url);
       if (g1) {
@@ -84,6 +85,10 @@ export default {
       let g3 = pattern_user_artwork.exec(url);
       if (g3) {
         this.routeToUser(g3[1])
+      }
+      let g4 = pattern_user_artwork_2.exec(url);
+      if (g4) {
+        this.routeToUser(g4[1])
       }
 
     },

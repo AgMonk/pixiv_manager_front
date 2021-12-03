@@ -74,7 +74,7 @@ export default {
   },
   mounted() {
     setTitle('我的关注作品')
-
+    console.clear()
     this.findPage(false);
   },
   watch: {

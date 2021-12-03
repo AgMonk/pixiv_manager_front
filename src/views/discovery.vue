@@ -83,6 +83,7 @@ export default {
     },
   },
   mounted() {
+    console.clear()
     // this.load(20)
     setTitle('发现')
   },
