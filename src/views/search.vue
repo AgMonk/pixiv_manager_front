@@ -58,6 +58,7 @@ export default {
       this.keywords = this.keywords.filter(i => i !== e.before);
       this.keywords.push(e.after)
       this.currentTab = e.after;
+      this.tabClick()
     },
     tabEdit(name, action) {
       if (action === 'remove') {

@@ -10,7 +10,11 @@
     <template #content>
       <!--      鼠标提示内容 -->
       <el-descriptions label="作品简介" border :column="1">
-        <el-descriptions-item label="pid">{{ data.id }}</el-descriptions-item>
+        <el-descriptions-item label="pid">{{ data.id }}
+          <el-button size="mini" type="primary">
+            <click-copy :copy-text="data.id">复制</click-copy>
+          </el-button>
+        </el-descriptions-item>
         <el-descriptions-item label="创建时间">{{ new Date(data.createDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
         <el-descriptions-item label="标签">
           <template v-for="item in data.tagTranslation">
@@ -66,14 +70,15 @@
 import BookmarkIcon from "@/components/bookmark-icon";
 import {mapGetters, mapState} from "vuex";
 import UserAvatar from "@/components/user-avatar";
+import ClickCopy from "@/components/click-copy";
 
 export default {
   name: "illust-card",
-  components: {UserAvatar, BookmarkIcon},
+  components: {ClickCopy, UserAvatar, BookmarkIcon},
   data() {
     return {}
   },
-  emits: ['bookmark-add-success','bookmark-del-success'],
+  emits: ['bookmark-add-success', 'bookmark-del-success'],
   computed: {
     ...mapState(`config`, [`config`])
   },

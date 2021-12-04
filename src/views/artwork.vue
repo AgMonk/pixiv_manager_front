@@ -65,7 +65,11 @@
                     />
                     <span style="font-size:25px;color:white">{{ illust.bookmarkCount }}</span></div>
                 </template>
-                <el-descriptions-item label="pid">{{ illust.id }}</el-descriptions-item>
+                <el-descriptions-item label="pid">{{ illust.id }}
+                  <el-button size="mini" type="primary">
+                    <click-copy :copy-text="illust.id">复制</click-copy>
+                  </el-button>
+                </el-descriptions-item>
                 <el-descriptions-item label="创建时间">{{ new Date(illust.createDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
                 <el-descriptions-item label="上传时间">{{ new Date(illust.uploadDate).format("yyyy-MM-dd hh:mm") }}</el-descriptions-item>
                 <el-descriptions-item label="尺寸">{{ illust.width }}x{{ illust.height }}</el-descriptions-item>
@@ -110,10 +114,11 @@ import axios from "axios";
 import PixivTag from "@/components/pixiv-tag";
 import UserAvatar from "@/components/user-avatar";
 import {setTitle} from "@/assets/js/projectUtils";
+import ClickCopy from "@/components/click-copy";
 
 export default {
   name: "artwork",
-  components: {UserAvatar, PixivTag, FollowButton, BookmarkIcon},
+  components: {ClickCopy, UserAvatar, PixivTag, FollowButton, BookmarkIcon},
   data() {
     return {
       illust: {},

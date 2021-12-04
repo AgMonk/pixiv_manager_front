@@ -25,7 +25,9 @@
           @follow-success="user.isFollowed = true"
           @unfollow-success="user.isFollowed = false"
       />
-   <!--      插画 漫画切换-->
+      <el-button
+          v-if="user && user.hasOwnProperty('isFollowed') && user.userId!==config.uid"
+          :size="followButtonSize" type="primary"><click-copy :copy-text="`https://pixiv.net/users/${user.userId}/artworks`">复制</click-copy></el-button>
 
  </span>
 </template>
@@ -33,10 +35,11 @@
 <script>
 import FollowButton from "@/components/follow-button";
 import {mapState} from "vuex";
+import ClickCopy from "@/components/click-copy";
 
 export default {
   name: "user-avatar",
-  components: {FollowButton},
+  components: {ClickCopy, FollowButton},
   data() {
     return {
       defaultValue: {}
