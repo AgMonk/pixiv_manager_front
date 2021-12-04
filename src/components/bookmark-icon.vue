@@ -1,9 +1,11 @@
 <template>
-  <el-icon :size="size?size:defaultSize" :color="color">
-    <alarm-clock v-if="loading"/>
-    <star-filled class="clickAble" v-else-if="bookmarkData &&bookmarkData.hasOwnProperty('id')" @click="click"/>
-    <star class="clickAble" v-else @click="click"/>
-  </el-icon>
+  <el-tooltip content="收藏" placement="top">
+    <el-icon :color="color" :size="size">
+      <alarm-clock v-if="loading"/>
+      <star-filled class="clickAble" v-else-if="bookmarkData &&bookmarkData.hasOwnProperty('id')" @click="click"/>
+      <star class="clickAble" v-else @click="click"/>
+    </el-icon>
+  </el-tooltip>
 </template>
 
 <script>
@@ -16,7 +18,6 @@ export default {
   data() {
     return {
       color: 'white',
-      defaultSize: 30,
       loading: false,
       bookmarkData: {},
     }
@@ -89,7 +90,7 @@ export default {
     }
   },
   props: {
-    "size": {type: Number},
+    "size": {type: Number, default: 30},
     "data": {type: Object},
     pid: {
       required: true,

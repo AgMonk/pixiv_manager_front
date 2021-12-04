@@ -9,14 +9,15 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import './assets/js/utils'
 import Clipboard from 'v-clipboard3';
 
-import {AlarmClock, Star, StarFilled} from "@element-plus/icons"
+import {AlarmClock, Plus, Star, StarFilled} from "@element-plus/icons"
 
 
 createApp(App)
     .use(Clipboard)
-    .component("star",Star)
-    .component("alarm-clock",AlarmClock)
-    .component("star-filled",StarFilled)
+    .component("star", Star)
+    .component("alarm-clock", AlarmClock)
+    .component("star-filled", StarFilled)
+    .component("plus", Plus)
     .use(store)
     .use(router)
     .use(ElementPlus, {locale: zhCn,})

@@ -53,6 +53,11 @@
             />
           </el-col>
           <el-col style="text-align: right;color:white" :span="6">
+            <el-tooltip content="在新标签打开" placement="top">
+              <el-icon :size="30" style="cursor: pointer" @click="clickPlus(data.id)">
+                <plus/>
+              </el-icon>
+            </el-tooltip>
             <bookmark-icon :pid="data.id" :token="config.token" :data="data.bookmarkData"
                            @bookmark-add-success="bookmarkStatusChanged('bookmark-add-success',$event)"
                            @bookmark-del-success="bookmarkStatusChanged('bookmark-del-success',$event)"
@@ -87,6 +92,9 @@ export default {
     bookmarkStatusChanged(name, e) {
       this.$emit(name, e)
     },
+    clickPlus(id) {
+      window.open(`/artwork/${id}`)
+    }
   },
   mounted() {
     //尝试翻译标签
