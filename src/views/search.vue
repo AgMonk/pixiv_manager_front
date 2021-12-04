@@ -106,8 +106,8 @@ export default {
       this.currentTab = this.config.keyword;
       this.$router.push(`/search/${this.currentTab}/1`)
     } else {
-      if (!this.keywords.includes(this.currentTab)) {
-        this.keywords.push(this.currentTab)
+      if (!this.keywords.includes(keyword)) {
+        this.keywords.push(keyword)
       }
       this.currentTab = keyword;
     }

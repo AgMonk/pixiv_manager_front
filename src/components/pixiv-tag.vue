@@ -1,32 +1,48 @@
 <template>
-<!--  todo 点击搜索标签 -->
   <span>
-    <el-tag
-        style="cursor:pointer"
-        :size="size?size:defaultSize"
-    >
+    <el-tooltip content="点击搜索" placement="top">
+      <el-tag
+          style="cursor:pointer"
+          :size="size"
+          @click="click"
+      >
       {{ data.tag }}
     </el-tag>
-    <span style="color:white">{{ !data.translation ? "" : data.translation.en }}</span>
+    </el-tooltip>
+    <span v-if="data.hasOwnProperty('translation') && data.translation.hasOwnProperty('en')" style="color:white">
+          <el-tooltip content="点击复制" placement="top">
+<click-copy :copy-text="data.translation.en">
+          {{ data.translation.en }}
+      </click-copy>
+    </el-tooltip>
+    </span>
   </span>
 </template>
 
 <script>
+import ClickCopy from "@/components/click-copy";
+
 export default {
   name: "pixiv-tag",
+  components: {ClickCopy},
   data() {
-    return {
-      defaultSize:"small",
-    }
+    return {}
   },
-  methods: {},
+  methods: {
+    click() {
+      this.$router.push(`/search/${this.data.tag}/1`)
+    },
+  },
   mounted() {
   },
   watch: {},
   props: {
-    size:{type:String},
-    data:{
-      type:Object,
+    size: {
+      type: String,
+      default: "small"
+    },
+    data: {
+      type: Object,
       required: true
     }
   },

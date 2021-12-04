@@ -1,11 +1,11 @@
 <template>
-  <el-tooltip content="收藏" placement="top">
-    <el-icon :color="color" :size="size">
+  <el-icon :color="color" :size="size">
+    <el-tooltip content="收藏" placement="top">
       <alarm-clock v-if="loading"/>
       <star-filled class="clickAble" v-else-if="bookmarkData &&bookmarkData.hasOwnProperty('id')" @click="click"/>
       <star class="clickAble" v-else @click="click"/>
-    </el-icon>
-  </el-tooltip>
+    </el-tooltip>
+  </el-icon>
 </template>
 
 <script>
