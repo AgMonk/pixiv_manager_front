@@ -2,7 +2,6 @@
 import {pixivNetRequest} from "@/assets/js/request";
 import {getFromCache} from "@/assets/js/CacheUtils";
 import {replacePixivNetArray} from "@/assets/js/pixivUtils";
-import {ElMessage} from "element-plus";
 
 const getKey = ({keyword, p, mode}) => {
     return `搜索作品 keyword:${keyword} mode:${mode} page:${p}`;
@@ -43,8 +42,8 @@ export default {
 
                 return {title, data, total, popular, relatedTags};
 
-            }).catch(reason => {
-                ElMessage.error(reason)
+                // }).catch(reason => {
+                //     ElMessage.error(reason)
             })
         },
         findSearch: ({dispatch, commit, state}, {force, keyword, p = 1, mode = 'all'}) => {

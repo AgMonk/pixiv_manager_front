@@ -115,6 +115,27 @@ import PixivTag from "@/components/pixiv-tag";
 import UserAvatar from "@/components/user-avatar";
 import {setTitle} from "@/assets/js/projectUtils";
 import ClickCopy from "@/components/click-copy";
+import {ElMessage} from "element-plus";
+
+const getAria2Param = (i, url, dir) => {
+  const u = url.substring(url.indexOf("/img"));
+  return {
+    method: 'aria2.addUri',
+    id: `${new Date().getTime()}-i`,
+    jsonrpc: 2.0,
+    params: [
+      [
+        `https://i.pixiv.re${u}`,
+        `https://i.pximg.net${u}`,
+      ],
+      {
+        dir,
+        fileName: u.substring(u.lastIndexOf('/') + 1),
+        referer: "*",
+      }
+    ],
+  }
+}
 
 export default {
   name: "artwork",
@@ -133,34 +154,17 @@ export default {
     ...mapActions("pixivIllust", [`findDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     downloadWithAria2() {
-      let id = new Date().getTime();
-      this.illust.urls.original.forEach(url => {
-        const original = url.substring(url.indexOf('/img-original'));
-        const params = {
-          method: 'aria2.addUri',
-          id,
-          jsonrpc: 2.0,
-          params: [
-            [
-              `https://i.pixiv.re${original}`,
-              `https://i.pximg.net${original}`,
-            ],
-            {
-              dir: this.config.aria2.dir,
-              fileName: url.substring(url.lastIndexOf('/') + 1),
-              referer: "*",
-            }
-          ],
-        }
-        axios.post('/aria2', params).then(res => {
+      const array = this.illust.illustType === 2 ? this.illust.urls.zip : this.illust.urls.original;
+      for (let i = 0; i < array.length; i++) {
+        const aria2Param = getAria2Param(i, array[i], this.config.aria2.dir);
+        axios.post('/aria2', aria2Param).then(res => {
           if (res.status === 200) {
-            if (res.data.id === id && res.data.result !== undefined && res.data.result.length === 16) {
-              this.$message.success('提交下载任务成功')
+            if (res.data.id === aria2Param.id && res.data.result !== undefined && res.data.result.length === 16) {
+              ElMessage.success('提交下载任务成功')
             }
           }
-        })
-      })
-
+        });
+      }
     },
     handleUrls() {
       Object.keys(this.illust.urls).forEach(key => {

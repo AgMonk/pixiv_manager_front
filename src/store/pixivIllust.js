@@ -17,7 +17,16 @@ export default {
             return pixivNetRequest({url: prefix + pid}).then(body => {
 
                 // 解析所有 url
-                if (body.hasOwnProperty("urls") && body.hasOwnProperty("illustType") && body.illustType !== 2) {
+                if (body.hasOwnProperty("urls")
+                    // && body.hasOwnProperty("illustType") && body.illustType !== 2
+                ) {
+                    if (body.hasOwnProperty("illustType") && body.illustType === 2) {
+                        // 压缩包
+                        body.urls.zip = body.urls.original
+                                .substring(0, body.urls.original.lastIndexOf('_'))
+                                .replace("img-original", "img-zip-ugoira")
+                            + "_ugoira1920x1080.zip";
+                    }
                     Object.keys(body.urls).forEach(key => {
                         let url = body.urls[key].replace("https://i.pximg.net", "")
                         let urls = [];
@@ -25,13 +34,14 @@ export default {
                             urls.push(url.replace("_p0", "_p" + i))
                         }
                         body.urls[key] = urls
+
                     })
                 }
                 console.log(body)
 
                 //标签翻译
-                if (body.hasOwnProperty('tags') && body.tags.hasOwnProperty('tags')){
-                    body.tags.tags.forEach(item=>{
+                if (body.hasOwnProperty('tags') && body.tags.hasOwnProperty('tags')) {
+                    body.tags.tags.forEach(item => {
                         if (item.hasOwnProperty('translation')) {
                             const key = item.tag;
                             const value = item.translation.en;
