@@ -42,7 +42,7 @@
       </div>
       <div>
         <el-row>
-          <el-col style="text-align: left" :span="18">
+          <el-col :span="14" style="text-align: left">
             <user-avatar v-if="!disableAvatar"
                          :user="data"
                          avatar-img-key="profileImageUrl"
@@ -52,7 +52,7 @@
                          :name-length="8"
             />
           </el-col>
-          <el-col style="text-align: right;color:white" :span="6">
+          <el-col :span="10" style="text-align: right;color:white">
             <el-tooltip content="在新标签打开" placement="top">
               <el-icon :size="30" style="cursor: pointer" @click="clickPlus(data.id)">
                 <plus/>
