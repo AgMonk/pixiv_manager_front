@@ -121,7 +121,7 @@ const getAria2Param = (i, url, dir) => {
   const u = url.substring(url.indexOf("/img"));
   return {
     method: 'aria2.addUri',
-    id: `${new Date().getTime()}-i`,
+    id: `${new Date().getTime()}-${i}`,
     jsonrpc: 2.0,
     params: [
       [
