@@ -154,16 +154,19 @@ export default {
     ...mapActions("pixivIllust", [`findDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     downloadWithAria2() {
+      ElMessage.info("开始获取下载地址")
       const array = this.illust.illustType === 2 ? this.illust.urls.zip : this.illust.urls.original;
       for (let i = 0; i < array.length; i++) {
         const aria2Param = getAria2Param(i, array[i], this.config.aria2.dir);
-        axios.post('/aria2', aria2Param).then(res => {
-          if (res.status === 200) {
-            if (res.data.id === aria2Param.id && res.data.result !== undefined && res.data.result.length === 16) {
-              ElMessage.success('提交下载任务成功')
+        setTimeout(() => {
+          axios.post('/aria2', aria2Param).then(res => {
+            if (res.status === 200) {
+              if (res.data.id === aria2Param.id && res.data.result !== undefined && res.data.result.length === 16) {
+                ElMessage.success(`提交下载任务成功 ${this.illust.id}_${i}`)
+              }
             }
-          }
-        });
+          });
+        }, i * 1000)
       }
     },
     handleUrls() {
@@ -187,6 +190,7 @@ export default {
       }).catch(reason => {
         this.loading = false;
         console.log(reason)
+        ElMessage.error(reason.message);
       })
     },
   },
