@@ -6,6 +6,18 @@
         <el-button size="mini" style="margin-left: 25px" type="primary" @click="editKeyword">修改关键字</el-button>
         <el-button size="mini" style="margin-left: 25px" type="primary" @click="findPage(true)">刷新</el-button>
         <filter-bookmarked @change="findPage(false)"/>
+        <span style="margin-left: 25px">
+          <span style="color:white">过滤黑名单:</span>
+          <el-switch
+              v-model="filterBlackList"
+              active-icon="是"
+              inactive-icon="否"
+              inline-prompt
+              style="margin-left: 24px"
+              @change="findPage(false)"
+          />
+          <span v-if="blackListCount>0" style="margin-left: 25px">已屏蔽 {{ blackListCount }} 个作品</span>
+        </span>
       </div>
       <el-pagination v-model:current-page="p"
                      v-model:page-size="size"
@@ -48,6 +60,8 @@ export default {
       k: '',
       size: 60,
       result: {},
+      filterBlackList: true,
+      blackListCount: 0,
     }
   },
   computed: {
@@ -98,6 +112,15 @@ export default {
           res.data = res.data.filter(i => !i.bookmarkData)
           res.popular.recent = res.popular.recent.filter(i => !i.bookmarkData)
           res.popular.permanent = res.popular.permanent.filter(i => !i.bookmarkData)
+        }
+
+        //黑名单过滤
+        if (this.filterBlackList && this.config && this.config.blackList && this.config.blackList.user) {
+          const blackUserId = Object.keys(this.config.blackList.user);
+          const before = res.data.length
+          res.data = res.data.filter(i => !blackUserId.includes(i.userId))
+          const after = res.data.length
+          this.blackListCount = before - after
         }
 
         console.log(res)

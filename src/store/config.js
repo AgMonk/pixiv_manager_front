@@ -1,6 +1,9 @@
 // 配置
+// noinspection JSUnusedLocalSymbols
+
 import {copyObj} from "@/assets/js/utils";
 import {getCache, putCache} from "@/assets/js/storageUtils";
+import {ElMessage} from "element-plus";
 
 export default {
     namespaced: true,
@@ -19,9 +22,27 @@ export default {
             //保存搜索关键字
             keywords: [],
             keyword: "",
+            blackList: {
+                user: {},
+            }
         },
     },
     mutations: {
+        addBlackListUser: (state, {id, name}) => {
+            state.config.blackList = state.config.blackList ? state.config.blackList : {user: {}};
+            state.config.blackList.user = state.config.blackList.user ? state.config.blackList.user : {};
+            state.config.blackList.user[id] = name;
+            state.config = copyObj(state.config);
+            putCache("config", state.config);
+        },
+        delBlackListUser: (state, id) => {
+            if (state.config.blackList && state.config.blackList.user && state.config.blackList.user.hasOwnProperty(id)) {
+                delete state.config.blackList.user[id]
+                state.config = copyObj(state.config);
+                putCache("config", state.config);
+                ElMessage.success('已解除屏蔽')
+            }
+        },
         setConfig: (state, {key, value}) => {
             state.config[key] = value;
             console.log('更新配置: ' + key)
