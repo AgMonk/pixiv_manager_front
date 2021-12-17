@@ -11,6 +11,7 @@
         <el-col v-for="item in list" :lg="4" :md="6" :sm="8" :xl="3"
                 :xs="12">
           <illust-card :data="item"
+                       :disableTooltip="disableTooltip"
                        :disableAvatar="$route.path.startsWith('/user')"
                        @bookmark-add-success="$emit('bookmark-add-success',$event)"
                        @bookmark-del-success="$emit('bookmark-del-success',$event)"
@@ -40,6 +41,7 @@ export default {
       list: [],
       infiniteScroll: false,
       timeRange: '',
+      disableTooltip: true,
     }
   },
   emits: ['bookmark-add-success', 'bookmark-del-success'],
@@ -63,6 +65,23 @@ export default {
   mounted() {
     console.log(this.data)
     this.calculationTimeRange(this.data)
+
+    document.onkeydown = (e) => {
+      if (e.key === "Control") {
+        this.disableTooltip = false
+        console.log("显示tooltip")
+      }
+    }
+    document.onkeyup = (e) => {
+      if (e.key === "Control") {
+        this.disableTooltip = true
+        console.log("关闭tooltip")
+      }
+    }
+  },
+  unmounted() {
+    document.onkeydown = undefined
+    document.onkeyup = undefined
   },
   watch: {
     // "data": {

@@ -1,10 +1,10 @@
 <template>
   <el-tooltip
+      :disabled="disableTooltip"
       class="item"
       effect="light"
       placement="bottom"
-      :show-after="1000"
-      :auto-close="2000"
+      :show-after="100"
   >
     <!--suppress HtmlUnknownAttribute -->
     <template #content>
@@ -114,7 +114,11 @@ export default {
     },
     disableAvatar: {
       type: Boolean
-    }
+    },
+    disableTooltip: {
+      type: Boolean,
+      default: true,
+    },
   },
 }
 
