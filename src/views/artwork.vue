@@ -190,7 +190,7 @@ export default {
       }).catch(reason => {
         this.loading = false;
         console.log(reason)
-        ElMessage.error(reason.message);
+        ElMessage.error(reason);
       })
     },
   },

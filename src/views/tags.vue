@@ -37,6 +37,7 @@
                   <el-option v-for="item in tagTypes" :label="item" :value="item"/>
                 </el-select>
                 <el-button type="primary" style="margin-left: 10px" @click="setTranslation(props.row.tag,formData)">提交</el-button>
+                <el-button style="margin-left: 10px" type="primary" @click="setTranslation(props.row.tag,{translation:props.row.tag,type:'其他'})">空过</el-button>
               </el-form-item>
             </el-form>
             <div v-if="props.row.suggest && props.row.suggest.length>0">
@@ -59,6 +60,7 @@
         <el-table-column prop="customTranslation" v-if="params.filter.type==='已完成'" label="自定义翻译" width="300px"/>
         <el-table-column prop="redirect" v-if="params.filter.type==='重定向'" label="重定向" width="300px"/>
         <el-table-column prop="type" label="标签类型"  v-if="params.filter.type==='已完成'" width="100px"/>
+        <el-table-column label="使用次数" prop="count" width="100px"/>
         <el-table-column  label="操作" >
           <!--suppress HtmlUnknownAttribute -->
           <template #default="props">
@@ -180,7 +182,7 @@ export default {
         this.total = res.total;
 
 
-        this.formData = {}
+        this.formData = {type: '其他'}
         this.expandRowKeys = []
         this.expandRowKeys.push(this.getRowKey(this.pageData[0]))
       })
