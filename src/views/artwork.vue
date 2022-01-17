@@ -154,7 +154,7 @@ export default {
     ...mapActions("pixivIllust", [`findDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
     downloadWithAria2() {
-      ElMessage.info("开始获取下载地址")
+      ElMessage.info("开始添加下载任务")
       const array = this.illust.illustType === 2 ? this.illust.urls.zip : this.illust.urls.original;
       for (let i = 0; i < array.length; i++) {
         const aria2Param = getAria2Param(i, array[i], this.config.aria2.dir);
@@ -166,7 +166,7 @@ export default {
               }
             }
           });
-        }, i * 1000)
+        }, i * 500)
       }
     },
     handleUrls() {

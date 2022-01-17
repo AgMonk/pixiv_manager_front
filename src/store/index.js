@@ -10,6 +10,7 @@ import pixivUserIllust from "@/store/pixivUserIllust";
 import pixivTagTranslation from "@/store/pixivTagTranslation";
 import pixivSearch from "@/store/pixivSearch";
 import pixivDiscovery from "@/store/pixivDiscovery";
+import pixivFiles from "@/store/pixivFiles";
 
 export default createStore({
   state: {
@@ -19,7 +20,7 @@ export default createStore({
   actions: {
   },
   modules: {
-    tags, config, pixivIllust, pixivFollow, pixivUser, pixivBookmark, pixivFollowLatest, pixivUserIllust, pixivTagTranslation, pixivSearch, pixivDiscovery
+    tags, config, pixivIllust, pixivFollow, pixivUser, pixivBookmark, pixivFollowLatest, pixivUserIllust, pixivTagTranslation, pixivSearch, pixivDiscovery, pixivFiles
   },
 
 })

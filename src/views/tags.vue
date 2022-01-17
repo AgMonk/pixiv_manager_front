@@ -7,12 +7,16 @@
         <el-option value="已完成">已完成</el-option>
         <el-option value="重定向">重定向</el-option>
       </el-select>
+      <el-select v-model="params.filter.dirName" clearable placeholder="目录" @change="changeType">
+        <el-option v-for="item in dirs" :value="item">{{ item }}</el-option>
+      </el-select>
       <el-pagination
           @current-change="refresh"
           v-model:currentPage="params.page"
           :page-size="params.size"
           layout="total, prev, pager, next, jumper"
-          :total="total">
+          :total="total"
+      >
       </el-pagination>
     </el-header>
 
@@ -94,7 +98,8 @@ export default {
     return {
       params: {
         filter: {
-          type: "未完成"
+          type: "未完成",
+          dirName: '',
         },
         page: 1,
         size: 10
@@ -107,6 +112,7 @@ export default {
       pageData: [],
       allCompletedTags: [],
       expandRowKeys: [],
+      dirs: [],
     }
   },
   computed: {
@@ -116,7 +122,8 @@ export default {
     ...mapActions("tags", [`page`, `findAllCompletedTags`, `findAllTypes`, `setCustomTranslation`]),
     ...mapMutations("tags", [`setParams`]),
     ...mapGetters("tags", [`getParams`]),
-    getLanguage(s){
+    ...mapActions('pixivFiles', [`listDirs`]),
+    getLanguage(s) {
       let code = s.charCodeAt(0);
       let language = 'jp'
       if (code >= 44032 && code <= 55215) {
@@ -125,7 +132,7 @@ export default {
       if (code >= 65 && code <= 90) {
         language = 'en'
       }
-       if (code >= 97 && code <= 122) {
+      if (code >= 97 && code <= 122) {
         language = 'en'
       }
       return language;
@@ -191,6 +198,11 @@ export default {
           this.allCompletedTags = res.data;
         }
       })
+
+      this.listDirs().then(res => {
+        this.dirs = res;
+      })
+
     },
   },
   mounted() {
