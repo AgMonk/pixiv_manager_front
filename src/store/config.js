@@ -50,9 +50,7 @@ export default {
             putCache("config", state.config);
         },
         updateConfig: (state, payload) => {
-            const token = state.config.token
-            state.config = copyObj(payload);
-            state.config.token = token;
+            state.config = Object.assign({}, state.config, copyObj(payload));
             putCache("config", state.config);
         },
         loadConfig: (state) => {
