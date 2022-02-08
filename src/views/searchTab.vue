@@ -5,7 +5,7 @@
       <div style="text-align: left;color:white">
         <el-button size="mini" style="margin-left: 25px" type="primary" @click="editKeyword">修改关键字</el-button>
         <el-button size="mini" style="margin-left: 25px" type="primary" @click="findPage(true)">刷新</el-button>
-        <filter-bookmarked @change="findPage(false)"/>
+        <filter-bookmarked @change="findPage(false)" />
         <span style="margin-left: 25px">
           <span style="color:white">过滤黑名单:</span>
           <el-switch
@@ -18,12 +18,27 @@
           />
           <span v-if="blackListCount>0" style="margin-left: 25px">已屏蔽 {{ blackListCount }} 个作品</span>
         </span>
+        <span style="margin-left: 25px">
+          <span style="color:white">日期范围:</span>
+          <el-date-picker
+              v-model="dateRange"
+              clearable
+              end-placeholder="结束"
+              range-separator="到"
+              size="small"
+              start-placeholder="起始"
+              type="daterange"
+              value-format="YYYY-MM-DD"
+              @change="findPage(false)"
+          />
+        </span>
       </div>
       <el-pagination v-model:current-page="p"
                      v-model:page-size="size"
                      :total="total"
                      layout="total,prev, pager, next, jumper"
-                     @current-change="currentChanged"/>
+                     @current-change="currentChanged"
+      />
 
     </el-header>
 
@@ -31,7 +46,8 @@
       <div v-if="!loading">
         <illust-cards v-if="result.data" :data="result.data"
                       @bookmark-add-success="bookmarkStatusChanged"
-                      @bookmark-del-success="bookmarkStatusChanged"/>
+                      @bookmark-del-success="bookmarkStatusChanged"
+        />
 
       </div>
     </el-main>
@@ -62,6 +78,7 @@ export default {
       result: {},
       filterBlackList: true,
       blackListCount: 0,
+      dateRange: [],
     }
   },
   computed: {
@@ -100,8 +117,14 @@ export default {
       const title = `搜索 ${keyword} 第 ${p} 页`;
 
       setTitle(title)
+      const param = {keyword, p, force}
+      if (this.dateRange) {
+        const [scd, ecd] = this.dateRange
+        param.scd = scd
+        param.ecd = ecd
+      }
 
-      return this.findSearch({keyword, p, force}).then(res => {
+      return this.findSearch(param).then(res => {
         const domain = this.config.imgDomain;
         addDomains(res.data, domain)
         addDomains(res.popular.recent, domain)
@@ -138,7 +161,15 @@ export default {
       console.clear()
       this.p = parseInt(page);
       this.k = keyword;
+
+      const now = new Date()
+      const d0 = now.format("yyyy-MM-dd")
+      const yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24)
+      const d1 = yesterday.format("yyyy-MM-dd")
+      this.dateRange = [d1, d0]
+
       this.findPage(false)
+
     },
   }
   ,
