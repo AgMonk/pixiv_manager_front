@@ -3,8 +3,8 @@ import {pixivNetRequest} from "@/assets/js/request";
 import {getFromCache} from "@/assets/js/CacheUtils";
 import {replacePixivNetArray} from "@/assets/js/pixivUtils";
 
-const getKey = ({keyword, p, mode}) => {
-    return `搜索作品 keyword:${keyword} mode:${mode} page:${p}`;
+const getKey = ({keyword, p, mode, scd, ecd}) => {
+    return `搜索作品 keyword:${keyword} mode:${mode} page:${p} ${scd}-${ecd}`;
 }
 
 export default {
