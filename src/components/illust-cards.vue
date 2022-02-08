@@ -56,10 +56,14 @@ export default {
     //计算时间跨度
     calculationTimeRange(data) {
       const list = copyObj(data)
-      list.sort((a, b) => b.id - a.id)
-      const first = new Date(list[0].createDate).format("yyyy-MM-dd hh:mm");
-      const end = new Date(list[data.length - 1].createDate).format("yyyy-MM-dd hh:mm");
-      this.timeRange = `${first} ~ ${end}`
+      if (list && list.length > 0) {
+        list.sort((a, b) => b.id - a.id)
+        const first = new Date(list[0].createDate).format("yyyy-MM-dd hh:mm");
+        const end = new Date(list[data.length - 1].createDate).format("yyyy-MM-dd hh:mm");
+        this.timeRange = `${first} ~ ${end}`
+      } else {
+        this.timeRange = ''
+      }
     },
   },
   mounted() {
