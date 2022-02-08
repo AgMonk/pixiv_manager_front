@@ -16,7 +16,19 @@
               style="margin-left: 24px"
               @change="findPage(false)"
           />
+
           <span v-if="blackListCount>0" style="margin-left: 25px">已屏蔽 {{ blackListCount }} 个作品</span>
+        </span>
+        <span style="margin-left: 25px">
+          <span style="color:white">自动重试:</span>
+          <el-switch
+              v-model="autoRetry"
+              active-icon="是"
+              inactive-icon="否"
+              inline-prompt
+              style="margin-left: 24px"
+              @change="findPage(false)"
+          />
         </span>
         <span style="margin-left: 25px">
           <span style="color:white">日期范围:</span>
@@ -77,6 +89,7 @@ export default {
       size: 60,
       result: {},
       filterBlackList: true,
+      autoRetry: true,
       blackListCount: 0,
       dateRange: [],
     }
@@ -154,10 +167,12 @@ export default {
       }).catch(res => {
         console.error(res + " " + title)
         // if (res.includes('请求超时')) {
-        ElMessage.error('请求失败，稍后自动重试')
-        setTimeout(() => {
-          this.findPage(force)
-        }, 3000)
+        if (this.autoRetry) {
+          ElMessage.error('请求失败，稍后自动重试')
+          setTimeout(() => {
+            this.findPage(force)
+          }, 3000)
+        }
         // } else {
         //   ElMessage.error(res)
         this.loading = false;
