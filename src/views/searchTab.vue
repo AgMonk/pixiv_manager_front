@@ -153,8 +153,15 @@ export default {
         this.loading = false
       }).catch(res => {
         console.error(res + " " + title)
-        ElMessage.error(res)
+        // if (res.includes('请求超时')) {
+        ElMessage.error('请求失败，稍后自动重试')
+        setTimeout(() => {
+          this.findPage(force)
+        }, 3000)
+        // } else {
+        //   ElMessage.error(res)
         this.loading = false;
+        // }
       })
     },
     init({keyword, page}) {
