@@ -1,5 +1,5 @@
 <template>
-  <el-container direction="vertical" v-loading="loading">
+  <el-container v-loading="loading" direction="vertical">
     <!--  <el-container direction="horizontal">-->
     <el-main>
       <el-container>
@@ -9,36 +9,36 @@
           <div v-if="illust.pageCount>1">
             <el-image
                 v-for="i in Math.min(illust.pageCount,5)"
-                style="width: 100px; height: 100px"
-                :src="illust.urls.small[i-1]"
-                :preview-src-list="illust.urls['original']"
                 :initial-index="i-1"
+                :preview-src-list="illust.urls['original']"
+                :src="illust.urls.small[i-1]"
                 hide-on-click-modal
+                style="width: 100px; height: 100px"
             />
           </div>
           <el-image v-if="illust.urls"
-                    :src="illust.urls.regular[0]"
                     :preview-src-list="illust.urls['original']"
+                    :src="illust.urls.regular[0]"
                     hide-on-click-modal
           />
           <!--          标题-->
           <div style="text-align: left;margin-top: 5px">
-            <el-link style="font-size: 25px;" :href="`https://pixiv.net/artworks/${illust.id}`" target="_blank">{{ illust.title }}</el-link>
+            <el-link :href="`https://pixiv.net/artworks/${illust.id}`" style="font-size: 25px;" target="_blank">{{ illust.title }}</el-link>
           </div>
           <!--          描述-->
           <div style="text-align: left;margin-top: 5px;color:white" v-html="illust.illustComment">
           </div>
           <!--          标签-->
           <div v-if="illust.tags && illust.tags.tags" style="text-align: left;margin-top: 15px">
-            <pixiv-tag v-for="item in illust.tags.tags" :data="item" style="margin-left: 5px"/>
+            <pixiv-tag v-for="item in illust.tags.tags" :data="item" style="margin-left: 5px" />
           </div>
         </el-main>
         <el-aside>
           <!--作者信息-->
           <div>
-            <el-descriptions border :column="1">
+            <el-descriptions :column="1" border>
               <template #title>
-                <user-avatar :user="user"/>
+                <user-avatar :user="user" />
               </template>
               <template #extra>
               </template>
@@ -52,7 +52,7 @@
           <!--作品信息-->
           <div>
             <div>
-              <el-descriptions border :column="1">
+              <el-descriptions :column="1" border>
                 <template #title>
                   <span style="color:white">作品信息 共：{{ illust.pageCount }} 张</span>
                 </template>
@@ -60,8 +60,8 @@
                   <div>
                     <bookmark-icon
                         v-if="illust && illust.id"
-                        :pid="illust.id"
                         :data="illust.bookmarkData"
+                        :pid="illust.id"
                     />
                     <span style="font-size:25px;color:white">{{ illust.bookmarkCount }}</span></div>
                 </template>
@@ -77,21 +77,21 @@
                 <el-descriptions-item label="浏览">{{ illust.viewCount }}</el-descriptions-item>
                 <el-descriptions-item label="下载原图">
                   <el-collapse>
-                    <el-collapse-item title="下载地址(点击展开)" name="1" v-if="illust.urls && illust.urls.hasOwnProperty('original')">
+                    <el-collapse-item v-if="illust.urls && illust.urls.hasOwnProperty('original')" name="1" title="下载地址(点击展开)">
                       <el-link
                           v-for="url in illust.urls.original"
-                          :href="url"
                           :download="url.substring(url.lastIndexOf('/')+1)"
+                          :href="url"
                           target="_blank"
                       >
                         {{ url.substring(url.lastIndexOf("/") + 1) }}
                       </el-link>
                     </el-collapse-item>
                   </el-collapse>
-                  <el-button type="primary" @click="downloadWithAria2" size="mini">发送到Aria2</el-button>
+                  <el-button size="mini" type="primary" @click="downloadWithAria2">发送到Aria2</el-button>
                 </el-descriptions-item>
                 <el-descriptions-item label="强制刷新">
-                  <el-button type="primary" @click="refresh(true)" size="mini">刷新</el-button>
+                  <el-button size="mini" type="primary" @click="refresh(true)">刷新</el-button>
                 </el-descriptions-item>
                 <el-descriptions-item label="上传时间">{{}}</el-descriptions-item>
               </el-descriptions>
@@ -145,6 +145,10 @@ export default {
       illust: {},
       user: {},
       loading: false,
+      comments: {
+        data: [],
+        hasNext: true,
+      }
     }
   },
   computed: {
@@ -153,6 +157,7 @@ export default {
   methods: {
     ...mapActions("pixivIllust", [`findDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
+    ...mapActions("pixivIllustComments", [`roots`]),
     downloadWithAria2() {
       ElMessage.info("开始添加下载任务")
       const array = this.illust.illustType === 2 ? this.illust.urls.zip : this.illust.urls.original;
@@ -174,6 +179,16 @@ export default {
         this.illust.urls[key] = this.illust.urls[key].map(item => this.config.imgDomain + item)
       })
     },
+    loadComments() {
+      const pid = this.illust.id;
+      const offset = this.comments.data.length;
+      this.roots({pid, offset}).then(res => {
+        const {comments, hasNext} = res;
+        this.comments.data.push(...comments)
+        this.comments.hasNext = hasNext
+        console.log(comments)
+      })
+    },
     refresh(force) {
       this.loading = true;
       this.findDetail({force, pid: this.$route.params.pid}).then(res => {
@@ -186,6 +201,8 @@ export default {
         this.findUserInfo({force, uid: this.illust.userId}).then(res => this.user = copyObj(res))
 
         setTitle(`${this.illust.title} - ${this.illust.userName}`)
+
+        this.loadComments()
 
       }).catch(reason => {
         this.loading = false;

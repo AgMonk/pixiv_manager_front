@@ -11,6 +11,7 @@ import pixivTagTranslation from "@/store/pixivTagTranslation";
 import pixivSearch from "@/store/pixivSearch";
 import pixivDiscovery from "@/store/pixivDiscovery";
 import pixivFiles from "@/store/pixivFiles";
+import pixivIllustComments from "@/store/pixivIllustComments";
 
 export default createStore({
   state: {
@@ -20,7 +21,19 @@ export default createStore({
   actions: {
   },
   modules: {
-    tags, config, pixivIllust, pixivFollow, pixivUser, pixivBookmark, pixivFollowLatest, pixivUserIllust, pixivTagTranslation, pixivSearch, pixivDiscovery, pixivFiles
+    tags,
+    config,
+    pixivIllust,
+    pixivFollow,
+    pixivUser,
+    pixivBookmark,
+    pixivFollowLatest,
+    pixivUserIllust,
+    pixivTagTranslation,
+    pixivSearch,
+    pixivDiscovery,
+    pixivFiles,
+    pixivIllustComments
   },
 
 })
