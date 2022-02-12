@@ -30,7 +30,7 @@ export default {
   },
   computed: {},
   methods: {
-    ...mapActions("pixivIllustComments", [`roots`, `replies`]),
+    ...mapActions("pixivIllustComments", [`roots`]),
     loadRoots() {
       const offset = this.comments.data.length
       this.roots({pid: this.pid, offset}).then(res => {

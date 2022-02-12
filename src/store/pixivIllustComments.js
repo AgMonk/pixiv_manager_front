@@ -27,6 +27,10 @@ export default {
         replies: ({dispatch, commit, state}, {id, page = 1, lang = 'zh'}) => {
             return pixivNetRequest({
                 url: prefix + "replies", params: {comment_id: id, page, lang}
+            }).then(res => {
+                const {comments} = res
+                comments.forEach(i => i.img = i.img.replace('https://i.pximg.net', '/pximg'))
+                return res
             })
         },
         method: ({dispatch, commit, state}, payload) => {
