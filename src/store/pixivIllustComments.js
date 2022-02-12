@@ -18,6 +18,10 @@ export default {
         roots: ({dispatch, commit, state}, {pid, offset, limit = 50, lang = 'zh'}) => {
             return pixivNetRequest({
                 url: prefix + "roots", params: {illust_id: pid, offset, limit, lang}
+            }).then(res => {
+                const {comments} = res
+                comments.forEach(i => i.img = i.img.replace('https://i.pximg.net', '/pximg'))
+                return res
             })
         },
         replies: ({dispatch, commit, state}, {id, page = 1, lang = 'zh'}) => {

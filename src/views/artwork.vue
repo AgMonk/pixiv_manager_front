@@ -32,6 +32,11 @@
           <div v-if="illust.tags && illust.tags.tags" style="text-align: left;margin-top: 15px">
             <pixiv-tag v-for="item in illust.tags.tags" :data="item" style="margin-left: 5px" />
           </div>
+          <!--          评论区-->
+          <div>
+            <el-divider content-position="left">评论区</el-divider>
+            <comment-area v-if="illust.id" :pid="illust.id" />
+          </div>
         </el-main>
         <el-aside>
           <!--作者信息-->
@@ -116,6 +121,7 @@ import UserAvatar from "@/components/user-avatar";
 import {setTitle} from "@/assets/js/projectUtils";
 import ClickCopy from "@/components/click-copy";
 import {ElMessage} from "element-plus";
+import CommentArea from "@/components/comments/CommentArea";
 
 const getAria2Param = (i, url, dir) => {
   const u = url.substring(url.indexOf("/img"));
@@ -139,16 +145,13 @@ const getAria2Param = (i, url, dir) => {
 
 export default {
   name: "artwork",
-  components: {ClickCopy, UserAvatar, PixivTag, FollowButton, BookmarkIcon},
+  components: {CommentArea, ClickCopy, UserAvatar, PixivTag, FollowButton, BookmarkIcon},
   data() {
     return {
       illust: {},
       user: {},
       loading: false,
-      comments: {
-        data: [],
-        hasNext: true,
-      }
+
     }
   },
   computed: {
@@ -157,7 +160,6 @@ export default {
   methods: {
     ...mapActions("pixivIllust", [`findDetail`]),
     ...mapActions("pixivUser", [`findUserInfo`, `getUserInfo`]),
-    ...mapActions("pixivIllustComments", [`roots`]),
     downloadWithAria2() {
       ElMessage.info("开始添加下载任务")
       const array = this.illust.illustType === 2 ? this.illust.urls.zip : this.illust.urls.original;
@@ -179,16 +181,6 @@ export default {
         this.illust.urls[key] = this.illust.urls[key].map(item => this.config.imgDomain + item)
       })
     },
-    loadComments() {
-      const pid = this.illust.id;
-      const offset = this.comments.data.length;
-      this.roots({pid, offset}).then(res => {
-        const {comments, hasNext} = res;
-        this.comments.data.push(...comments)
-        this.comments.hasNext = hasNext
-        console.log(comments)
-      })
-    },
     refresh(force) {
       this.loading = true;
       this.findDetail({force, pid: this.$route.params.pid}).then(res => {
@@ -202,7 +194,6 @@ export default {
 
         setTitle(`${this.illust.title} - ${this.illust.userName}`)
 
-        this.loadComments()
 
       }).catch(reason => {
         this.loading = false;
