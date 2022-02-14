@@ -101,9 +101,11 @@ export default {
     ...mapActions('pixivSearch', [`findSearch`]),
     ...mapMutations(`pixivSearch`, [`delCache`]),
     bookmarkStatusChanged() {
+      const [scd, ecd] = this.dateRange
       this.delCache({
         keyword: this.k,
         p: this.p,
+        scd, ecd,
       })
     },
     currentChanged(e) {

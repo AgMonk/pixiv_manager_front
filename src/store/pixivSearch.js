@@ -13,9 +13,10 @@ export default {
         cache: {},
     },
     mutations: {
-        delCache: (state, {keyword, p, mode = 'all'}) => {
-            console.log(`移除缓存 ${getKey({keyword, p, mode})}`)
-            delete state.cache[keyword][getKey({keyword, p, mode})]
+        delCache: (state, {keyword, p, mode = 'all', scd, ecd}) => {
+            const key = getKey({keyword, p, mode, scd, ecd})
+            console.log(`移除缓存 ${key}`)
+            delete state.cache[keyword][key]
         },
     },
     actions: {
