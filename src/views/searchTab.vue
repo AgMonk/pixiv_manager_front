@@ -91,7 +91,7 @@ export default {
       filterBlackList: true,
       autoRetry: true,
       blackListCount: 0,
-      dateRange: [],
+      dateRange: undefined,
     }
   },
   computed: {
@@ -186,11 +186,7 @@ export default {
       this.p = parseInt(page);
       this.k = keyword;
 
-      const now = new Date()
-      const d0 = now.format("yyyy-MM-dd")
-      const yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24)
-      const d1 = yesterday.format("yyyy-MM-dd")
-      this.dateRange = [d1, d0]
+
 
       this.findPage(false)
 
@@ -198,6 +194,11 @@ export default {
   }
   ,
   mounted() {
+    const now = new Date()
+    const d0 = now.format("yyyy-MM-dd")
+    const yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24)
+    const d1 = yesterday.format("yyyy-MM-dd")
+    this.dateRange = this.dateRange ? this.dateRange : [d1, d0]
     // noinspection JSCheckFunctionSignatures
     this.init(this.$route.params)
   }
