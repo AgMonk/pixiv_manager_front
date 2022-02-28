@@ -157,7 +157,11 @@ export default {
           const blackUserId = Object.keys(this.config.blackList.user);
           const before = res.data.length
           res.data = res.data.filter(i => {
-            return !blackUserId.includes(i.userId) && !i.userName.includes('资源');
+            return !blackUserId.includes(i.userId)
+                && !i.userName.includes('资源')
+                && !i.userName.includes('详情')
+                && !i.userName.includes('王者')
+                ;
           })
           const after = res.data.length
           this.blackListCount = before - after
