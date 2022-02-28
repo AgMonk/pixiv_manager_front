@@ -1,7 +1,8 @@
 <template>
   <el-container direction="vertical">
     <!--  <el-container direction="horizontal">-->
-    <el-header>
+    <el-header height="150px">
+      <el-input v-model="params.filter.keyword" placeholder="关键字" @change="changeType" />
       <el-select v-model="params.filter.type" @change="changeType">
         <el-option value="未完成">未完成</el-option>
         <el-option value="已完成">已完成</el-option>
@@ -100,6 +101,7 @@ export default {
         filter: {
           type: "未完成",
           dirName: '',
+          keyword: '',
         },
         page: 1,
         size: 10
@@ -145,8 +147,10 @@ export default {
         this.formData.type = filter[0].type;
       }else if (pattern.exec(this.formData.translation)){
         this.formData.type = "人物+作品";
-      }else if (skinPattern.exec(this.formData.translation)){
+      }else if (skinPattern.exec(this.formData.translation)) {
         this.formData.type = "皮肤";
+      } else if (this.formData.translation.includes('×')) {
+        this.formData.type = "CP";
       }
     },
     getRowKey(row) {
